@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBrandDto } from './dto/create-brand.dto';
-import { UpdateBrandDto } from './dto/update-brand.dto';
+import { CreateBrandInput } from './dto/create-brand.input';
+import { UpdateBrandInput } from './dto/update-brand.input';
 
 @Injectable()
 export class BrandService {
-  create(createBrandDto: CreateBrandDto) {
+  create(createBrandInput: CreateBrandInput) {
     return 'This action adds a new brand';
   }
 
@@ -16,7 +16,7 @@ export class BrandService {
     return `This action returns a #${id} brand`;
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
+  update(id: number, updateBrandInput: UpdateBrandInput) {
     return `This action updates a #${id} brand`;
   }
 

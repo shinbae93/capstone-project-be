@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCartDto } from './dto/create-cart.dto';
-import { UpdateCartDto } from './dto/update-cart.dto';
+import { CreateCartInput } from './dto/create-cart.input';
+import { UpdateCartInput } from './dto/update-cart.input';
 
 @Injectable()
 export class CartService {
-  create(createCartDto: CreateCartDto) {
+  create(createCartInput: CreateCartInput) {
     return 'This action adds a new cart';
   }
 
@@ -16,7 +16,7 @@ export class CartService {
     return `This action returns a #${id} cart`;
   }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
+  update(id: number, updateCartInput: UpdateCartInput) {
     return `This action updates a #${id} cart`;
   }
 

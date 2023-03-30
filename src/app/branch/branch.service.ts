@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBranchDto } from './dto/create-branch.dto';
-import { UpdateBranchDto } from './dto/update-branch.dto';
+import { CreateBranchInput } from './dto/create-branch.input';
+import { UpdateBranchInput } from './dto/update-branch.input';
 
 @Injectable()
 export class BranchService {
-  create(createBranchDto: CreateBranchDto) {
+  create(createBranchInput: CreateBranchInput) {
     return 'This action adds a new branch';
   }
 
@@ -16,7 +16,7 @@ export class BranchService {
     return `This action returns a #${id} branch`;
   }
 
-  update(id: number, updateBranchDto: UpdateBranchDto) {
+  update(id: number, updateBranchInput: UpdateBranchInput) {
     return `This action updates a #${id} branch`;
   }
 

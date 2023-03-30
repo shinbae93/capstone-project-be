@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { BranchService } from './branch.service';
-import { BranchController } from './branch.controller';
+import { BranchResolver } from './branch.resolver';
 
 @Module({
-  controllers: [BranchController],
-  providers: [BranchService]
+  providers: [BranchResolver, BranchService]
 })
 export class BranchModule {}
