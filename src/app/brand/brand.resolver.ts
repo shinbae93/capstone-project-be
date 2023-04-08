@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { BrandService } from './brand.service';
-import { Brand } from './entities/brand.entity';
+import { Brand } from '../../database/entities/brand.entity';
 import { CreateBrandInput } from './dto/create-brand.input';
 import { UpdateBrandInput } from './dto/update-brand.input';
 
@@ -19,7 +19,7 @@ export class BrandResolver {
   }
 
   @Query(() => Brand, { name: 'brand' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => Int }) id: string) {
     return this.brandService.findOne(id);
   }
 
@@ -29,7 +29,7 @@ export class BrandResolver {
   }
 
   @Mutation(() => Brand)
-  removeBrand(@Args('id', { type: () => Int }) id: number) {
+  removeBrand(@Args('id', { type: () => Int }) id: string) {
     return this.brandService.remove(id);
   }
 }

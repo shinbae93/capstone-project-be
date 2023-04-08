@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { CustomerService } from './customer.service';
-import { Customer } from './entities/customer.entity';
+import { Customer } from '../../database/entities/customer.entity';
 import { CreateCustomerInput } from './dto/create-customer.input';
 import { UpdateCustomerInput } from './dto/update-customer.input';
 
@@ -9,7 +9,9 @@ export class CustomerResolver {
   constructor(private readonly customerService: CustomerService) {}
 
   @Mutation(() => Customer)
-  createCustomer(@Args('createCustomerInput') createCustomerInput: CreateCustomerInput) {
+  createCustomer(
+    @Args('createCustomerInput') createCustomerInput: CreateCustomerInput,
+  ) {
     return this.customerService.create(createCustomerInput);
   }
 
@@ -19,17 +21,22 @@ export class CustomerResolver {
   }
 
   @Query(() => Customer, { name: 'customer' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => Int }) id: string) {
     return this.customerService.findOne(id);
   }
 
   @Mutation(() => Customer)
-  updateCustomer(@Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput) {
-    return this.customerService.update(updateCustomerInput.id, updateCustomerInput);
+  updateCustomer(
+    @Args('updateCustomerInput') updateCustomerInput: UpdateCustomerInput,
+  ) {
+    return this.customerService.update(
+      updateCustomerInput.id,
+      updateCustomerInput,
+    );
   }
 
   @Mutation(() => Customer)
-  removeCustomer(@Args('id', { type: () => Int }) id: number) {
+  removeCustomer(@Args('id', { type: () => Int }) id: string) {
     return this.customerService.remove(id);
   }
 }

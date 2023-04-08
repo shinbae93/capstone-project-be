@@ -12,15 +12,15 @@ export class CategoryService {
     return `This action returns all category`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} category`;
   }
 
-  update(id: number, updateCategoryInput: UpdateCategoryInput) {
+  update(id: string, updateCategoryInput: UpdateCategoryInput) {
     return `This action updates a #${id} category`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} category`;
   }
 }

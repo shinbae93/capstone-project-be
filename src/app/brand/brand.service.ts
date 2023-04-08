@@ -12,15 +12,15 @@ export class BrandService {
     return `This action returns all brand`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} brand`;
   }
 
-  update(id: number, updateBrandInput: UpdateBrandInput) {
+  update(id: string, updateBrandInput: UpdateBrandInput) {
     return `This action updates a #${id} brand`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} brand`;
   }
 }

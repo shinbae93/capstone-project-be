@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config/dist/config.service';
-import { SequelizeModule } from '@nestjs/sequelize';
+import { ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    SequelizeModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        dialect: 'postgres',
-        uri: configService.get<string>('DB_URI'),
-        models: ['./entities'],
-        autoLoadModels: true,
+        type: 'postgres',
+        url: configService.get<string>('DATABASE_URL'),
+        entities: ['./entities/*.entity.ts'],
+        migrations: ['./migrations/*.ts'],
         logging: true,
+        autoLoadEntities: true,
       }),
+      inject: [ConfigService],
     }),
   ],
 })
