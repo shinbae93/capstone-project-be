@@ -10,42 +10,14 @@ import {
 
 @ObjectType()
 @Entity()
-export class User extends BaseEntity {
+export class Subject extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Field()
   @Column()
-  username: string;
-
-  @Field()
-  @Column()
-  password: string;
-
-  @Field()
-  @Column()
-  fullname: string;
-
-  @Field()
-  @Column()
-  email: string;
-
-  @Field()
-  @Column()
-  phoneNumber: string;
-
-  @Field()
-  @Column()
-  gender: string;
-
-  @Field()
-  @Column()
-  birthday: string;
-
-  @Field()
-  @Column()
-  role: string;
+  level: string;
 
   @Field()
   @CreateDateColumn()
