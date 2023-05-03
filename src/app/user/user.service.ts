@@ -1,26 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { ERROR_MESSAGE } from 'src/common/constants/error-message'
+import { User } from 'src/database/entities/user.entity'
+import { FindOptionsWhere, Repository } from 'typeorm'
 
 @Injectable()
 export class UserService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>
+  ) {}
+
+  async findOne(
+    criteria: FindOptionsWhere<User> | FindOptionsWhere<User>[]
+  ): Promise<User> {
+    return await this.userRepository.findOneBy(criteria)
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findOneIfExist(
+    criteria: FindOptionsWhere<User> | FindOptionsWhere<User>[]
+  ): Promise<User> {
+    const user = await this.findOne(criteria)
+
+    if (!user) {
+      throw new BadRequestException(ERROR_MESSAGE.USER_NOT_FOUND)
+    }
+
+    return user
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} user`;
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find()
   }
 
-  update(id: string, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async delete(id: string) {
+    return await this.userRepository.delete({ id })
   }
 }

@@ -1,25 +1,31 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 import {
-  BaseEntity,
   Column,
   Entity,
   Index,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm';
+} from 'typeorm'
+import { User } from './user.entity'
 
 @ObjectType()
 @Entity()
-export class TutorDetail extends BaseEntity {
+export class TutorDetail {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
+
+  @Field()
+  @Column()
+  cvImage: string
 
   @Field(() => ID)
   @Column()
   @Index()
-  userId: string;
+  userId: string
 
-  @Field()
-  @Column()
-  cvImage: string;
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'userId' })
+  user: User
 }

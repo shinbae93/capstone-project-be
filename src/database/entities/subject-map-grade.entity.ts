@@ -1,9 +1,9 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { BaseEntity, Entity, PrimaryColumn } from 'typeorm';
+import { Entity, PrimaryColumn } from 'typeorm';
 
 @ObjectType()
 @Entity()
-export class SubjectMapGrade extends BaseEntity {
+export class SubjectMapGrade {
   @Field(() => ID)
   @PrimaryColumn()
   subjectId: string;

@@ -1,4 +1,4 @@
-export const CLASS_METHOD = {
-  online: 'online',
-  offline: 'offline',
-};
+export enum CLASS_METHOD {
+  online = 'online',
+  offline = 'offline',
+}

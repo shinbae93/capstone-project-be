@@ -1,57 +1,56 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from 'typeorm'
+import { TutorDetail } from './tutor-detail.entity'
 
 @ObjectType()
 @Entity()
-export class User extends BaseEntity {
+export class User {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
+
+  @Field()
+  @Column({ unique: true })
+  email: string
+
+  @Column()
+  password: string
 
   @Field()
   @Column()
-  username: string;
+  fullName: string
+
+  @Field()
+  @Column({ unique: true })
+  phoneNumber: string
 
   @Field()
   @Column()
-  password: string;
+  gender: number
 
   @Field()
   @Column()
-  fullname: string;
+  birthday: Date
 
   @Field()
   @Column()
-  email: string;
+  role: string
 
-  @Field()
-  @Column()
-  phoneNumber: string;
-
-  @Field()
-  @Column()
-  gender: string;
-
-  @Field()
-  @Column()
-  birthday: string;
-
-  @Field()
-  @Column()
-  role: string;
+  @OneToOne(() => TutorDetail)
+  tutorDetail: TutorDetail
 
   @Field()
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date
 
   @Field()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 }

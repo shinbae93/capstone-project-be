@@ -1,6 +1,5 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,7 +9,7 @@ import {
 
 @ObjectType()
 @Entity()
-export class Grade extends BaseEntity {
+export class Grade {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
