@@ -3,11 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 import { TutorDetail } from './tutor-detail.entity'
+import { Role } from './role.entity'
 
 @ObjectType()
 @Entity()
@@ -41,7 +43,10 @@ export class User {
 
   @Field()
   @Column()
-  role: string
+  roleId: string
+
+  @ManyToOne(() => Role)
+  role: Role
 
   @OneToOne(() => TutorDetail)
   tutorDetail: TutorDetail

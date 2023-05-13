@@ -47,7 +47,7 @@ export class AuthService {
       id: user.id,
       fullname: user.fullName,
       email: user.email,
-      role: user.role,
+      role: user.roleId,
     }
 
     const accessToken = await this.jwtService.signAsync(payload)
@@ -66,7 +66,7 @@ export class AuthService {
     input.password = await this.hashPassword(input.password)
 
     const newUser = this.userRepository.create(input)
-    newUser.role = Role.Student
+    newUser.roleId = Role.Student
 
     return await this.userRepository.save(newUser)
   }
