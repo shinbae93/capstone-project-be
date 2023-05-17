@@ -45,9 +45,11 @@ export class User {
   @Column()
   roleId: string
 
+  @Field(() => Role)
   @ManyToOne(() => Role)
   role: Role
 
+  @Field()
   @OneToOne(() => TutorDetail)
   tutorDetail: TutorDetail
 
@@ -58,4 +60,9 @@ export class User {
   @Field()
   @UpdateDateColumn()
   updatedAt: Date
+
+  static getRelations() {
+    const relations = ['role', 'tutorDetail']
+    return relations
+  }
 }

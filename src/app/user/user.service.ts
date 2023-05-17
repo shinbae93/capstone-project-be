@@ -1,24 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { ERROR_MESSAGE } from 'src/common/constants/error-message'
+import { ERROR_MESSAGE } from 'src/common/error-message'
 import { User } from 'src/database/entities/user.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private userRepository: Repository<User>
-  ) {}
+  constructor(@InjectRepository(User) private userRepository: Repository<User>) {}
 
-  async findOne(
-    criteria: FindOptionsWhere<User> | FindOptionsWhere<User>[]
-  ): Promise<User> {
+  async findOne(criteria: FindOptionsWhere<User> | FindOptionsWhere<User>[]): Promise<User> {
     return await this.userRepository.findOneBy(criteria)
   }
 
-  async findOneIfExist(
-    criteria: FindOptionsWhere<User> | FindOptionsWhere<User>[]
-  ): Promise<User> {
+  async findOneIfExist(criteria: FindOptionsWhere<User> | FindOptionsWhere<User>[]): Promise<User> {
     const user = await this.findOne(criteria)
 
     if (!user) {
@@ -33,6 +27,9 @@ export class UserService {
   }
 
   async delete(id: string) {
-    return await this.userRepository.delete({ id })
+    await this.findOneIfExist({ id })
+    await this.userRepository.delete({ id })
+
+    return true
   }
 }

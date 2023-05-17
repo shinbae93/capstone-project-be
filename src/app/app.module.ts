@@ -3,9 +3,10 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
+import * as Joi from 'joi'
 import { DatabaseModule } from 'src/database/database.module'
-import { JwtAuthGuard } from 'src/guards/auth.guard'
-import { RoleGuard } from 'src/guards/role.guard'
+import { JwtAuthGuard } from 'src/guard/auth.guard'
+import { RoleGuard } from 'src/guard/role.guard'
 import { AuthModule } from './auth/auth.module'
 import { ClassModule } from './class/class.module'
 import { CourseModule } from './course/course.module'
@@ -25,9 +26,9 @@ import { SubjectMapGradeModule } from './subject-map-grade/subject-map-grade.mod
 import { SubjectModule } from './subject/subject.module'
 import { TutorDetailModule } from './tutor-detail/tutor-detail.module'
 import { TutorReportModule } from './tutor-report/tutor-report.module'
+import { TutorRequestModule } from './tutor-request/tutor-request.module'
 import { TutorReviewModule } from './tutor-review/tutor-review.module'
 import { UserModule } from './user/user.module'
-import * as Joi from 'joi'
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import * as Joi from 'joi'
     InstallationModule,
     NotificationModule,
     SubjectMapGradeModule,
+    TutorRequestModule,
   ],
   providers: [
     {

@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
-import { ERROR_MESSAGE } from 'src/common/constants/error-message'
+import { RoleId } from 'src/common/enums'
+import { ERROR_MESSAGE } from 'src/common/error-message'
+import { Token } from 'src/database/entities/token.entity'
 import { User } from 'src/database/entities/user.entity'
+import { Repository } from 'typeorm'
 import { UserService } from '../user/user.service'
 import { LoginOutput } from './dto/login.output'
-import { JwtPayload } from './interfaces/jwt-payload.interface'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Token } from 'src/database/entities/token.entity'
-import { Repository } from 'typeorm'
 import { RegisterInput } from './dto/register.input'
-import { Role } from 'src/common/constants/role'
+import { JwtPayload } from './interfaces/jwt-payload.interface'
 
 const SALT_ROUND = 10
 
@@ -27,8 +27,8 @@ export class AuthService {
     return await bcrypt.hash(password, SALT_ROUND)
   }
 
-  async comparePassword(password: string, storedPassword: string) {
-    return await bcrypt.compare(password, storedPassword)
+  async comparePassword(password: string, hashedPassword: string) {
+    return await bcrypt.compare(password, hashedPassword)
   }
 
   async login(email: string, password: string): Promise<LoginOutput> {
@@ -37,8 +37,7 @@ export class AuthService {
       throw new UnauthorizedException(ERROR_MESSAGE.INCORRECT_USERNAME_OR_PASSWORD)
     }
 
-    const hashedPassword = await this.hashPassword(password)
-    const isPasswordMatching = await this.comparePassword(hashedPassword, user.password)
+    const isPasswordMatching = await this.comparePassword(password, user.password)
     if (!isPasswordMatching) {
       throw new UnauthorizedException(ERROR_MESSAGE.INCORRECT_USERNAME_OR_PASSWORD)
     }
@@ -66,7 +65,7 @@ export class AuthService {
     input.password = await this.hashPassword(input.password)
 
     const newUser = this.userRepository.create(input)
-    newUser.roleId = Role.Student
+    newUser.roleId = RoleId.STUDENT
 
     return await this.userRepository.save(newUser)
   }

@@ -13,7 +13,6 @@ import { JwtStrategy } from './strategies/jwt.strategy'
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Token]),
-    PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
@@ -23,6 +22,7 @@ import { JwtStrategy } from './strategies/jwt.strategy'
         },
       }),
     }),
+    PassportModule,
     UserModule,
   ],
   providers: [AuthResolver, AuthService, JwtStrategy],

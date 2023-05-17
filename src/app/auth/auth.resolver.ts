@@ -4,7 +4,7 @@ import { AuthService } from './auth.service'
 import { LoginInput } from './dto/login.input'
 import { LoginOutput } from './dto/login.output'
 import { RegisterInput } from './dto/register.input'
-import { Public } from 'src/decorators/public.decorator'
+import { Public } from 'src/decorator/public.decorator'
 
 @Public()
 @Resolver()
