@@ -1,28 +1,22 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 @ObjectType()
 @Entity()
 export class Subject {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string
 
   @Field()
-  @Column()
-  level: string;
+  @Column({ unique: true })
+  name: string
 
   @Field()
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt: Date
 
   @Field()
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date
 }

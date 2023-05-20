@@ -29,6 +29,8 @@ import { TutorReportModule } from './tutor-report/tutor-report.module'
 import { TutorRequestModule } from './tutor-request/tutor-request.module'
 import { TutorReviewModule } from './tutor-review/tutor-review.module'
 import { UserModule } from './user/user.module'
+import { UniqueStringConstraint } from 'src/decorator/unique-string.decorator'
+import { EntityExistsConstraint } from 'src/decorator/entity-exists.decorator'
 
 @Module({
   imports: [
@@ -42,7 +44,7 @@ import { UserModule } from './user/user.module'
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'schema.gql',
+      autoSchemaFile: true,
     }),
     AuthModule,
     DatabaseModule,
@@ -77,6 +79,8 @@ import { UserModule } from './user/user.module'
       provide: APP_GUARD,
       useClass: RoleGuard,
     },
+    UniqueStringConstraint,
+    EntityExistsConstraint,
   ],
 })
 export class AppModule {}

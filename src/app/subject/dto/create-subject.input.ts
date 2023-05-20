@@ -1,7 +1,10 @@
-import { InputType, Int, Field } from '@nestjs/graphql';
+import { InputType, Field } from '@nestjs/graphql'
+import { Subject } from 'src/database/entities/subject.entity'
+import { UniqueString } from 'src/decorator/unique-string.decorator'
 
 @InputType()
 export class CreateSubjectInput {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
+  @UniqueString(Subject)
+  @Field()
+  name: string
 }
