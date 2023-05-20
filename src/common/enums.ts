@@ -26,3 +26,12 @@ export enum TutorRequestStatus {
 registerEnumType(TutorRequestStatus, {
   name: 'TutorRequestStatus',
 })
+
+export enum CourseStatus {
+  DRAFT = 'DRAFT',
+  PUBLISH = 'PUBLISH',
+}
+
+registerEnumType(CourseStatus, {
+  name: 'CourseStatus',
+})

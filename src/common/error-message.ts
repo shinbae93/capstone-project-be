@@ -4,4 +4,6 @@ export const ERROR_MESSAGE = {
   INCORRECT_USERNAME_OR_PASSWORD: 'Incorrect username or password.',
   YOU_ARE_ALREADY_A_TUTOR: 'You are already a tutor.',
   TUTOR_REQUEST_NOT_FOUND: 'Tutor requets not found.',
+  COURSE_NOT_FOUND: 'Course not found.',
+  CAN_NOT_UPDATE_PUBLISHED_COURSE: 'Can not update published course.',
 }

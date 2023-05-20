@@ -42,7 +42,7 @@ import { UserModule } from './user/user.module'
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true,
+      autoSchemaFile: 'schema.gql',
     }),
     AuthModule,
     DatabaseModule,
