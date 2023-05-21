@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common'
-import { SubjectService } from './subject.service'
-import { SubjectResolver } from './subject.resolver'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Subject } from 'src/database/entities/subject.entity'
-import { SubjectMapGrade } from 'src/database/entities/subject-map-grade.entity'
+import { SubjectMapGradeModule } from '../subject-map-grade/subject-map-grade.module'
+import { SubjectResolver } from './subject.resolver'
+import { SubjectService } from './subject.service'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Subject, SubjectMapGrade])],
+  imports: [TypeOrmModule.forFeature([Subject]), SubjectMapGradeModule],
   providers: [SubjectResolver, SubjectService],
   exports: [SubjectService],
 })

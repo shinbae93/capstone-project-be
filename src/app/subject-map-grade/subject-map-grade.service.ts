@@ -38,13 +38,28 @@ export class SubjectMapGradeService {
 
   async bulkUpdateReferenceForSubject(
     subjectId: string,
-    listGradeId: string[]
+    gradeIds: string[]
   ): Promise<SubjectMapGrade[]> {
     await this.remove({ subjectId })
 
     const listMappers: SubjectMapGrade[] = []
 
-    for (const gradeId of listGradeId) {
+    for (const gradeId of gradeIds) {
+      listMappers.push(this.repository.create({ subjectId, gradeId }))
+    }
+
+    return this.repository.save(listMappers)
+  }
+
+  async bulkUpdateReferenceForGrade(
+    gradeId: string,
+    subjectIds: string[]
+  ): Promise<SubjectMapGrade[]> {
+    await this.remove({ gradeId })
+
+    const listMappers: SubjectMapGrade[] = []
+
+    for (const subjectId of subjectIds) {
       listMappers.push(this.repository.create({ subjectId, gradeId }))
     }
 
