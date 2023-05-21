@@ -22,7 +22,7 @@ export class GradeService {
     const grade = await this.gradeRepository.findOneBy(criteria)
 
     if (!grade) {
-      throw new BadRequestException(ERROR_MESSAGE)
+      throw new BadRequestException(ERROR_MESSAGE.GRADE_NOT_FOUND)
     }
 
     return grade

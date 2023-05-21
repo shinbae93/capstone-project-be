@@ -19,7 +19,7 @@ export class TutorRequest {
 
   @Field()
   @Column()
-  image: string
+  cvImage: string
 
   @Field(() => TutorRequestStatus)
   @Column()

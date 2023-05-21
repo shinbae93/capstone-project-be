@@ -1,12 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import {
-  Column,
-  Entity,
-  Index,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm'
+import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { User } from './user.entity'
 
 @ObjectType()

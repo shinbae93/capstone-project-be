@@ -42,10 +42,10 @@ export class TutorRequestService {
       throw new BadRequestException(ERROR_MESSAGE.YOU_ARE_ALREADY_A_TUTOR)
     }
 
-    const { image } = input
+    const { cvImage } = input
 
     const request = this.tutorRequestRepository.create({
-      image,
+      cvImage,
       userId: currentUser.id,
       status: TutorRequestStatus.PENDING,
     })

@@ -1,17 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { ERROR_MESSAGE } from 'src/common/error-message'
 import { SubjectMapGrade } from 'src/database/entities/subject-map-grade.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { ERROR_MESSAGE } from 'src/common/error-message'
-import { SubjectService } from '../subject/subject.service'
-import { GradeService } from '../grade/grade.service'
 
 @Injectable()
 export class SubjectMapGradeService {
   constructor(
-    @InjectRepository(SubjectMapGrade) private readonly repository: Repository<SubjectMapGrade>,
-    private readonly subjectService: SubjectService,
-    private readonly gradeService: GradeService
+    @InjectRepository(SubjectMapGrade) private readonly repository: Repository<SubjectMapGrade>
   ) {}
 
   findAll() {
@@ -21,13 +17,16 @@ export class SubjectMapGradeService {
   async findOne(
     criteria: FindOptionsWhere<SubjectMapGrade> | FindOptionsWhere<SubjectMapGrade>[]
   ): Promise<SubjectMapGrade> {
-    return await this.repository.findOneBy(criteria)
+    const subjectMapGrade = await this.repository.findOneBy(criteria)
+
+    if (!subjectMapGrade) {
+      throw new BadRequestException(ERROR_MESSAGE.SUBJECT_MAP_GRADE_NOT_FOUND)
+    }
+
+    return subjectMapGrade
   }
 
   async create(subjectId: string, gradeId: string): Promise<SubjectMapGrade> {
-    await this.subjectService.findOne({ id: subjectId })
-    await this.gradeService.findOne({ id: gradeId })
-
     const subjectMapGrade = await this.repository.findOneBy({ subjectId, gradeId })
     if (subjectMapGrade) {
       throw new BadRequestException(ERROR_MESSAGE.SUBJECT_ALREADY_MAPPED_TO_GRADE)

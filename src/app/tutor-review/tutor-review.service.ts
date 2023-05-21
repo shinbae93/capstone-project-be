@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { CreateTutorReviewInput } from './dto/create-tutor-review.input'
 import { UpdateTutorReviewInput } from './dto/update-tutor-review.input'
+import { InjectRepository } from '@nestjs/typeorm'
+import { TutorReview } from 'src/database/entities/tutor-review.entity'
+import { FindOptionsWhere, Repository } from 'typeorm'
+import { ERROR_MESSAGE } from 'src/common/error-message'
 
 @Injectable()
 export class TutorReviewService {
-  create(createTutorReviewInput: CreateTutorReviewInput) {
-    return 'This action adds a new tutorReview'
+  constructor(
+    @InjectRepository(TutorReview) private tutorReviewRepository: Repository<TutorReview>
+  ) {}
+
+  async create(input: CreateTutorReviewInput, userId: string) {
+    const tutorReview = this.tutorReviewRepository.create({ ...input, authorId: userId })
+    return await this.tutorReviewRepository.save(tutorReview)
   }
 
   findAll() {
-    return `This action returns all tutorReview`
+    return this.tutorReviewRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tutorReview`
+  async findOne(criteria: FindOptionsWhere<TutorReview> | FindOptionsWhere<TutorReview>[]) {
+    const tutorReview = await this.tutorReviewRepository.findOneBy(criteria)
+
+    if (!tutorReview) {
+      throw new BadRequestException(ERROR_MESSAGE.TUTOR_REVIEW_NOT_FOUND)
+    }
+
+    return tutorReview
   }
 
-  update(id: number, updateTutorReviewInput: UpdateTutorReviewInput) {
-    return `This action updates a #${id} tutorReview`
+  async update(id: string, input: UpdateTutorReviewInput) {
+    const tutorReview = await this.tutorReviewRepository.findOneBy({ id })
+
+    this.tutorReviewRepository.merge(tutorReview, input)
+
+    return await this.tutorReviewRepository.save(tutorReview)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tutorReview`
+  async remove(id: string) {
+    await this.tutorReviewRepository.delete({ id })
+
+    return true
   }
 }

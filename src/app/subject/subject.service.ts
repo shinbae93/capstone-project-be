@@ -24,7 +24,7 @@ export class SubjectService {
     const tutorRequest = await this.subjectRepository.findOneBy(criteria)
 
     if (!tutorRequest) {
-      throw new BadRequestException(ERROR_MESSAGE.TUTOR_REQUEST_NOT_FOUND)
+      throw new BadRequestException(ERROR_MESSAGE.SUBJECT_NOT_FOUND)
     }
 
     return tutorRequest

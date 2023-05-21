@@ -8,4 +8,8 @@ export const ERROR_MESSAGE = {
   CAN_NOT_UPDATE_PUBLISHED_COURSE: 'Can not update published course.',
   SUBJECT_ALREADY_MAPPED_TO_GRADE: 'This subject already mapped to grade.',
   SUBJECT_NAME_IS_ALREADY_EXISTS: "Subject's name is already exists.",
+  GRADE_NOT_FOUND: 'Grade not found.',
+  SUBJECT_NOT_FOUND: 'Subject not found.',
+  SUBJECT_MAP_GRADE_NOT_FOUND: 'Subject map grade not found.',
+  TUTOR_REVIEW_NOT_FOUND: 'Subject not found.',
 }
