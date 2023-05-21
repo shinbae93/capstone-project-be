@@ -1,4 +1,4 @@
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { User } from '../../database/entities/user.entity'
 import { UserService } from './user.service'
 
@@ -7,8 +7,8 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => User, { name: 'getUser' })
-  findOne(@Args('id', { type: () => Int }) id: string) {
-    return this.userService.findOneIfExist({ id })
+  findOne(@Args('id', { type: () => ID }) id: string) {
+    return this.userService.findOne({ id })
   }
 
   @Query(() => [User], { name: 'getUsers' })
@@ -17,7 +17,7 @@ export class UserResolver {
   }
 
   @Mutation(() => User, { name: 'deleteUser' })
-  deleteUser(@Args('id', { type: () => Int }) id: string) {
+  deleteUser(@Args('id', { type: () => ID }) id: string) {
     return this.userService.delete(id)
   }
 }

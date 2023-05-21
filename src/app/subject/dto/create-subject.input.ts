@@ -11,6 +11,6 @@ export class CreateSubjectInput {
   name: string
 
   @EntityExists(Grade)
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   gradeIds: string[]
 }

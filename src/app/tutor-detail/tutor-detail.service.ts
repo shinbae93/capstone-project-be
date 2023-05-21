@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { CreateTutorDetailInput } from './dto/create-tutor-detail.input';
-import { UpdateTutorDetailInput } from './dto/update-tutor-detail.input';
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { UpdateTutorDetailInput } from './dto/update-tutor-detail.input'
+import { FindOptionsWhere, Repository } from 'typeorm'
+import { InjectRepository } from '@nestjs/typeorm'
+import { TutorDetail } from 'src/database/entities/tutor-detail.entity'
+import { ERROR_MESSAGE } from 'src/common/error-message'
 
 @Injectable()
 export class TutorDetailService {
-  create(createTutorDetailInput: CreateTutorDetailInput) {
-    return 'This action adds a new tutorDetail';
+  constructor(
+    @InjectRepository(TutorDetail) private tutorDetailRepository: Repository<TutorDetail>
+  ) {}
+
+  async findOne(
+    criteria: FindOptionsWhere<TutorDetail> | FindOptionsWhere<TutorDetail>[]
+  ): Promise<TutorDetail> {
+    const tutorDetail = await this.tutorDetailRepository.findOneBy(criteria)
+
+    if (!tutorDetail) {
+      throw new BadRequestException(ERROR_MESSAGE.TUTOR_DETAIL_NOT_FOUND)
+    }
+
+    return tutorDetail
   }
 
-  findAll() {
-    return `This action returns all tutorDetail`;
-  }
+  async update(id: string, input: UpdateTutorDetailInput) {
+    const tutorDetail = await this.tutorDetailRepository.findOneBy({ id })
 
-  findOne(id: number) {
-    return `This action returns a #${id} tutorDetail`;
-  }
+    this.tutorDetailRepository.merge(tutorDetail, input)
 
-  update(id: number, updateTutorDetailInput: UpdateTutorDetailInput) {
-    return `This action updates a #${id} tutorDetail`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} tutorDetail`;
+    return await this.tutorDetailRepository.save(tutorDetail)
   }
 }

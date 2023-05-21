@@ -34,8 +34,8 @@ export class TutorRequestResolver {
     return this.tutorRequestService.update(input.id, input)
   }
 
-  @Mutation(() => TutorRequest, { name: 'updateStatusTutorRequest' })
-  updateStatusTutorRequest(@Args('input') input: UpdateStatusTutorRequestInput) {
+  @Mutation(() => TutorRequest, { name: 'updateTutorRequestStatus' })
+  updateTutorRequestStatus(@Args('input') input: UpdateStatusTutorRequestInput) {
     return this.tutorRequestService.updateStatus(input.id, input)
   }
 

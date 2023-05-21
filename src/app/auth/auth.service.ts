@@ -7,7 +7,6 @@ import { ERROR_MESSAGE } from 'src/common/error-message'
 import { Token } from 'src/database/entities/token.entity'
 import { User } from 'src/database/entities/user.entity'
 import { Repository } from 'typeorm'
-import { UserService } from '../user/user.service'
 import { LoginOutput } from './dto/login.output'
 import { RegisterInput } from './dto/register.input'
 import { JwtPayload } from './interfaces/jwt-payload.interface'
@@ -19,7 +18,6 @@ export class AuthService {
   constructor(
     @InjectRepository(Token) private tokenRepository: Repository<Token>,
     @InjectRepository(User) private userRepository: Repository<User>,
-    private userService: UserService,
     private jwtService: JwtService
   ) {}
 
@@ -32,7 +30,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string): Promise<LoginOutput> {
-    const user = await this.userService.findOne({ email })
+    const user = await this.userRepository.findOneBy({ email })
     if (!user) {
       throw new UnauthorizedException(ERROR_MESSAGE.INCORRECT_USERNAME_OR_PASSWORD)
     }
@@ -57,7 +55,7 @@ export class AuthService {
   }
 
   async register(input: RegisterInput): Promise<User> {
-    const user = await this.userService.findOne({ email: input.email })
+    const user = await this.userRepository.findOneBy({ email: input.email })
     if (user) {
       throw new BadRequestException(ERROR_MESSAGE.EMAIL_ALREADY_EXISTED)
     }

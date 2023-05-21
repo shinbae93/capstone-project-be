@@ -11,6 +11,6 @@ export class CreateGradeInput {
   name: string
 
   @EntityExists(Subject)
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   subjectIds: string[]
 }

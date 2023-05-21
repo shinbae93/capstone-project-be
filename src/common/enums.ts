@@ -19,8 +19,10 @@ export enum RoleId {
 
 export enum TutorRequestStatus {
   PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  ACCEPT = 'ACCEPT',
+  PROCESSING = 'PROCESSING',
+  ACCEPTED = 'ACCEPTED',
+  CANCELED = 'CANCELED',
+  REJECTED = 'REJECTED',
 }
 
 registerEnumType(TutorRequestStatus, {

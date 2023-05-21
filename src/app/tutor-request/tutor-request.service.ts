@@ -1,18 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { CreateTutorRequestInput } from './dto/create-tutor-request.input'
-import { UpdateTutorRequestInput } from './dto/update-tutor-request.input'
 import { InjectRepository } from '@nestjs/typeorm'
-import { TutorRequest } from 'src/database/entities/tutor-request.entity'
-import { FindOptionsWhere, Repository } from 'typeorm'
 import { RoleId, TutorRequestStatus } from 'src/common/enums'
 import { ERROR_MESSAGE } from 'src/common/error-message'
+import { TutorRequest } from 'src/database/entities/tutor-request.entity'
 import { User } from 'src/database/entities/user.entity'
+import { FindOptionsWhere, Repository } from 'typeorm'
+import { UserService } from '../user/user.service'
+import { CreateTutorRequestInput } from './dto/create-tutor-request.input'
 import { UpdateStatusTutorRequestInput } from './dto/update-status-tutor-request.input'
+import { UpdateTutorRequestInput } from './dto/update-tutor-request.input'
 
 @Injectable()
 export class TutorRequestService {
   constructor(
-    @InjectRepository(TutorRequest) private tutorRequestRepository: Repository<TutorRequest>
+    @InjectRepository(TutorRequest) private tutorRequestRepository: Repository<TutorRequest>,
+    private userService: UserService
   ) {}
 
   findAll() {
@@ -22,13 +24,7 @@ export class TutorRequestService {
   async findOne(
     criteria: FindOptionsWhere<TutorRequest> | FindOptionsWhere<TutorRequest>[]
   ): Promise<TutorRequest> {
-    return await this.tutorRequestRepository.findOneBy(criteria)
-  }
-
-  async findOneIfExist(
-    criteria: FindOptionsWhere<TutorRequest> | FindOptionsWhere<TutorRequest>[]
-  ): Promise<TutorRequest> {
-    const tutorRequest = await this.findOne(criteria)
+    const tutorRequest = await this.tutorRequestRepository.findOneBy(criteria)
 
     if (!tutorRequest) {
       throw new BadRequestException(ERROR_MESSAGE.TUTOR_REQUEST_NOT_FOUND)
@@ -54,7 +50,7 @@ export class TutorRequestService {
   }
 
   async update(id: string, input: UpdateTutorRequestInput): Promise<TutorRequest> {
-    const tutorRequest = await this.findOneIfExist({ id })
+    const tutorRequest = await this.tutorRequestRepository.findOneBy({ id })
 
     this.tutorRequestRepository.merge(tutorRequest, input)
 
@@ -62,7 +58,27 @@ export class TutorRequestService {
   }
 
   async updateStatus(id: string, input: UpdateStatusTutorRequestInput): Promise<TutorRequest> {
-    const tutorRequest = await this.findOneIfExist({ id })
+    const tutorRequest = await this.tutorRequestRepository.findOneBy({ id })
+
+    const { status } = input
+    let availableStatues = []
+
+    switch (tutorRequest.status) {
+      case TutorRequestStatus.PENDING:
+        availableStatues = [TutorRequestStatus.PROCESSING, TutorRequestStatus.CANCELED]
+        break
+      case TutorRequestStatus.PROCESSING:
+        availableStatues = [TutorRequestStatus.ACCEPTED, TutorRequestStatus.REJECTED]
+        break
+    }
+
+    if (!availableStatues.includes(status)) {
+      throw new BadRequestException(ERROR_MESSAGE.INVALID_STATUS)
+    }
+
+    if (status === TutorRequestStatus.ACCEPTED) {
+      await this.userService.createTutor(tutorRequest.userId, tutorRequest.cvImage)
+    }
 
     this.tutorRequestRepository.merge(tutorRequest, input)
 
@@ -70,7 +86,14 @@ export class TutorRequestService {
   }
 
   async remove(id: string) {
-    await this.findOneIfExist({ id })
+    const tutorRequest = await this.findOne({ id })
+
+    const deletableStatuses = [TutorRequestStatus.PENDING, TutorRequestStatus.CANCELED] as string[]
+
+    if (!deletableStatuses.includes(tutorRequest.status)) {
+      throw new BadRequestException(ERROR_MESSAGE.CAN_NOT_DELETE_THIS_TUTOR_REQUEST)
+    }
+
     await this.tutorRequestRepository.delete({ id })
 
     return true

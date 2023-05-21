@@ -3,7 +3,7 @@ export const ERROR_MESSAGE = {
   EMAIL_ALREADY_EXISTED: 'Email already existed.',
   INCORRECT_USERNAME_OR_PASSWORD: 'Incorrect username or password.',
   YOU_ARE_ALREADY_A_TUTOR: 'You are already a tutor.',
-  TUTOR_REQUEST_NOT_FOUND: 'Tutor requets not found.',
+  TUTOR_REQUEST_NOT_FOUND: 'Tutor request not found.',
   COURSE_NOT_FOUND: 'Course not found.',
   CAN_NOT_UPDATE_PUBLISHED_COURSE: 'Can not update published course.',
   SUBJECT_ALREADY_MAPPED_TO_GRADE: 'This subject already mapped to grade.',
@@ -12,4 +12,7 @@ export const ERROR_MESSAGE = {
   SUBJECT_NOT_FOUND: 'Subject not found.',
   SUBJECT_MAP_GRADE_NOT_FOUND: 'Subject map grade not found.',
   TUTOR_REVIEW_NOT_FOUND: 'Subject not found.',
+  CAN_NOT_DELETE_THIS_TUTOR_REQUEST: 'Can not delete this tutpr request.',
+  INVALID_STATUS: 'Invalid status.',
+  TUTOR_DETAIL_NOT_FOUND: 'Tutor detail not found.',
 }
