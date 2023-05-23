@@ -12,7 +12,11 @@ export const ERROR_MESSAGE = {
   SUBJECT_NOT_FOUND: 'Subject not found.',
   SUBJECT_MAP_GRADE_NOT_FOUND: 'Subject map grade not found.',
   TUTOR_REVIEW_NOT_FOUND: 'Subject not found.',
-  CAN_NOT_DELETE_THIS_TUTOR_REQUEST: 'Can not delete this tutpr request.',
+  CAN_NOT_DELETE_THIS_TUTOR_REQUEST: 'Can not delete this tutor request.',
   INVALID_STATUS: 'Invalid status.',
   TUTOR_DETAIL_NOT_FOUND: 'Tutor detail not found.',
+  CLASS_NOT_FOUND: 'Class not found.',
+  CAN_NOT_UPDATE_SCHEDULE_OF_CLASS_OF_PUBLISHED_COURSE: 'Can not update schedule of class of published course',
+  CAN_NOT_DELETE_THIS_CLASS: 'Can not delete this class.',
+  INVALID_SCHEDULE: 'Invalid schedule.'
 }

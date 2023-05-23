@@ -10,10 +10,10 @@ export class ScheduleTime {
   dayOfWeek: number
 
   @ValidateNested()
-  @Field(() => LessonTime, { description: 'Values from 0 to 24' })
+  @Field(() => LessonTime)
   startTime: LessonTime
 
   @ValidateNested()
-  @Field(() => LessonTime, { description: 'Values from 0 to 24' })
+  @Field(() => LessonTime)
   endTime: LessonTime
 }

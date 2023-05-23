@@ -13,7 +13,7 @@ import { DataSource, EntityTarget, Not, ObjectLiteral } from 'typeorm'
 export class UniqueStringConstraint implements ValidatorConstraintInterface {
   constructor(private readonly datasource: DataSource) {}
 
-  async validate(value: any, args: ValidationArguments): Promise<boolean> {
+  async validate(value: string, args: ValidationArguments): Promise<boolean> {
     const [entity, exceptProperty = 'id'] = args.constraints
 
     if (!value || !args.constraints?.length || !entity) {

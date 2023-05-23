@@ -20,9 +20,7 @@ export class CourseService {
     return await this.courseRepository.findOneBy(criteria)
   }
 
-  async findOneIfExist(
-    criteria: FindOptionsWhere<Course> | FindOptionsWhere<Course>[]
-  ): Promise<Course> {
+  async findOneIfExist(criteria: FindOptionsWhere<Course> | FindOptionsWhere<Course>[]): Promise<Course> {
     const course = await this.findOne(criteria)
 
     if (!course) {
@@ -44,7 +42,7 @@ export class CourseService {
   async update(id: string, input: UpdateCourseInput): Promise<Course> {
     const course = await this.findOneIfExist({ id })
 
-    if (course.status === CourseStatus.PUBLISH) {
+    if (course.status === CourseStatus.PUBLISHED) {
       throw new BadRequestException(ERROR_MESSAGE.CAN_NOT_UPDATE_PUBLISHED_COURSE)
     }
 

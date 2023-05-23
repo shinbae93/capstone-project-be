@@ -5,7 +5,7 @@ import { UpdateTutorRequestInput } from './dto/update-tutor-request.input'
 import { TutorRequest } from 'src/database/entities/tutor-request.entity'
 import { CurrentUser } from 'src/decorator/current-user.decorator'
 import { User } from 'src/database/entities/user.entity'
-import { UpdateStatusTutorRequestInput } from './dto/update-status-tutor-request.input'
+import { UpdateTutorRequestStatusInput } from './dto/update-tutor-request-status.input'
 
 @Resolver(() => TutorRequest)
 export class TutorRequestResolver {
@@ -22,10 +22,7 @@ export class TutorRequestResolver {
   }
 
   @Mutation(() => TutorRequest, { name: 'createTutorRequest' })
-  createTutorRequest(
-    @Args('input') input: CreateTutorRequestInput,
-    @CurrentUser() currentUser: User
-  ) {
+  createTutorRequest(@Args('input') input: CreateTutorRequestInput, @CurrentUser() currentUser: User) {
     return this.tutorRequestService.create(input, currentUser)
   }
 
@@ -35,7 +32,7 @@ export class TutorRequestResolver {
   }
 
   @Mutation(() => TutorRequest, { name: 'updateTutorRequestStatus' })
-  updateTutorRequestStatus(@Args('input') input: UpdateStatusTutorRequestInput) {
+  updateTutorRequestStatus(@Args('input') input: UpdateTutorRequestStatusInput) {
     return this.tutorRequestService.updateStatus(input.id, input)
   }
 

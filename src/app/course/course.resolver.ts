@@ -5,6 +5,7 @@ import { Course } from '../../database/entities/course.entity'
 import { CourseService } from './course.service'
 import { CreateCourseInput } from './dto/create-course.input'
 import { UpdateCourseInput } from './dto/update-course.input'
+import { UpdateCourseStatusInput } from './dto/update-course-status.input'
 
 @Resolver(() => Course)
 export class CourseResolver {
@@ -27,6 +28,11 @@ export class CourseResolver {
 
   @Mutation(() => Course)
   updateCourse(@Args('input') input: UpdateCourseInput) {
+    return this.courseService.update(input.id, input)
+  }
+
+  @Mutation(() => Course)
+  updateCourseStatus(@Args('input') input: UpdateCourseStatusInput) {
     return this.courseService.update(input.id, input)
   }
 

@@ -1,6 +1,8 @@
-import { Field, InputType } from '@nestjs/graphql'
+import { Field, ID, InputType } from '@nestjs/graphql'
 import { CourseStatus } from 'src/common/enums'
-import { ScheduleTime } from 'src/database/entities/sub-object/schedule-time'
+import { Grade } from 'src/database/entities/grade.entity'
+import { Subject } from 'src/database/entities/subject.entity'
+import { EntityExists } from 'src/decorator/entity-exists.decorator'
 
 @InputType()
 export class CreateCourseInput {
@@ -14,11 +16,16 @@ export class CreateCourseInput {
   status: string
 
   @Field()
-  startTime: Date
+  startDate: Date
 
   @Field()
-  endTime: Date
+  endDate: Date
 
-  @Field(() => [ScheduleTime])
-  schedule: ScheduleTime[]
+  @EntityExists(Grade)
+  @Field(() => ID)
+  gradeId: string
+
+  @EntityExists(Subject)
+  @Field(() => ID)
+  subjectId: string
 }

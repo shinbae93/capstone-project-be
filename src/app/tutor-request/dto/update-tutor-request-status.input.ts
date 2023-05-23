@@ -4,7 +4,7 @@ import { TutorRequest } from 'src/database/entities/tutor-request.entity'
 import { EntityExists } from 'src/decorator/entity-exists.decorator'
 
 @InputType()
-export class UpdateStatusTutorRequestInput {
+export class UpdateTutorRequestStatusInput {
   @EntityExists(TutorRequest)
   @Field(() => ID)
   id: string

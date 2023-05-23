@@ -7,23 +7,18 @@ import { User } from 'src/database/entities/user.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { UserService } from '../user/user.service'
 import { CreateTutorRequestInput } from './dto/create-tutor-request.input'
-import { UpdateStatusTutorRequestInput } from './dto/update-status-tutor-request.input'
+import { UpdateTutorRequestStatusInput } from './dto/update-tutor-request-status.input'
 import { UpdateTutorRequestInput } from './dto/update-tutor-request.input'
 
 @Injectable()
 export class TutorRequestService {
-  constructor(
-    @InjectRepository(TutorRequest) private tutorRequestRepository: Repository<TutorRequest>,
-    private userService: UserService
-  ) {}
+  constructor(@InjectRepository(TutorRequest) private tutorRequestRepository: Repository<TutorRequest>, private userService: UserService) {}
 
   findAll() {
     return this.tutorRequestRepository.find()
   }
 
-  async findOne(
-    criteria: FindOptionsWhere<TutorRequest> | FindOptionsWhere<TutorRequest>[]
-  ): Promise<TutorRequest> {
+  async findOne(criteria: FindOptionsWhere<TutorRequest> | FindOptionsWhere<TutorRequest>[]): Promise<TutorRequest> {
     const tutorRequest = await this.tutorRequestRepository.findOneBy(criteria)
 
     if (!tutorRequest) {
@@ -57,7 +52,7 @@ export class TutorRequestService {
     return await this.tutorRequestRepository.save(tutorRequest)
   }
 
-  async updateStatus(id: string, input: UpdateStatusTutorRequestInput): Promise<TutorRequest> {
+  async updateStatus(id: string, input: UpdateTutorRequestStatusInput): Promise<TutorRequest> {
     const tutorRequest = await this.tutorRequestRepository.findOneBy({ id })
 
     const { status } = input

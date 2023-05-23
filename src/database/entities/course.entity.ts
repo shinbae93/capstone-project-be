@@ -4,14 +4,15 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
 import { User } from './user.entity'
 import { CourseStatus } from 'src/common/enums'
-import { ScheduleTime } from './sub-object/schedule-time'
 import { Grade } from './grade.entity'
 import { Subject } from './subject.entity'
+import { Class } from './class.entity'
 
 @ObjectType()
 @Entity()
@@ -33,16 +34,12 @@ export class Course {
   status: string
 
   @Field()
-  @Column()
-  startTime: Date
+  @Column({ type: 'date' })
+  startDate: Date
 
   @Field()
-  @Column()
-  endTime: Date
-
-  @Field(() => [ScheduleTime])
-  @Column({ type: 'jsonb' })
-  schedule: ScheduleTime[]
+  @Column({ type: 'date' })
+  endDate: Date
 
   @Field()
   @Column()
@@ -67,6 +64,10 @@ export class Course {
   @Field(() => Subject)
   @ManyToOne(() => Subject)
   subject: Subject
+
+  @Field(() => [Class])
+  @OneToMany(() => Class, (entity) => entity.course)
+  classes: Class[]
 
   @Field()
   @CreateDateColumn()

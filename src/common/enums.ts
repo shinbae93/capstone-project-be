@@ -5,6 +5,10 @@ export enum ClassMethod {
   OFFLINE = 'offline',
 }
 
+registerEnumType(ClassMethod, {
+  name: 'ClassMethod',
+})
+
 export enum Gender {
   MALE = 0,
   FEMALE = 1,
@@ -31,7 +35,7 @@ registerEnumType(TutorRequestStatus, {
 
 export enum CourseStatus {
   DRAFT = 'DRAFT',
-  PUBLISH = 'PUBLISH',
+  PUBLISHED = 'PUBLISHED',
 }
 
 registerEnumType(CourseStatus, {
