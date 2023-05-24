@@ -18,5 +18,6 @@ export const ERROR_MESSAGE = {
   CLASS_NOT_FOUND: 'Class not found.',
   CAN_NOT_UPDATE_SCHEDULE_OF_CLASS_OF_PUBLISHED_COURSE: 'Can not update schedule of class of published course',
   CAN_NOT_DELETE_THIS_CLASS: 'Can not delete this class.',
-  INVALID_SCHEDULE: 'Invalid schedule.'
+  INVALID_SCHEDULE: 'Invalid schedule.',
+  ENROLMENT_NOT_FOUND: 'Enrolment not found.',
 }
