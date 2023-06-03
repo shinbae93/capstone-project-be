@@ -29,6 +29,10 @@ export class User {
   @Column()
   fullName: string
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  avatar: string
+
   @Field()
   @Column({ unique: true })
   phoneNumber: string

@@ -1,7 +1,7 @@
 import { InputType, Field, ID } from '@nestjs/graphql'
 import { IsUrl } from 'class-validator'
 import { TutorDetail } from 'src/database/entities/tutor-detail.entity'
-import { EntityExists } from 'src/decorator/entity-exists.decorator'
+import { EntityExists } from 'src/decorators/entity-exists.decorator'
 
 @InputType()
 export class UpdateTutorDetailInput {

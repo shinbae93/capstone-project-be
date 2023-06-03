@@ -3,7 +3,7 @@ import { TutorRequestService } from './tutor-request.service'
 import { CreateTutorRequestInput } from './dto/create-tutor-request.input'
 import { UpdateTutorRequestInput } from './dto/update-tutor-request.input'
 import { TutorRequest } from 'src/database/entities/tutor-request.entity'
-import { CurrentUser } from 'src/decorator/current-user.decorator'
+import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { User } from 'src/database/entities/user.entity'
 import { UpdateTutorRequestStatusInput } from './dto/update-tutor-request-status.input'
 

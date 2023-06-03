@@ -1,12 +1,7 @@
+import { SortField } from 'src/base/types/query-params.type'
 import { ObjectLiteral, SelectQueryBuilder } from 'typeorm'
-import { SortField } from 'src/base/query-params.interface'
 
-export function getRelations() {}
-
-export function joinRelations<T extends ObjectLiteral>(
-  queryBuilder: SelectQueryBuilder<T>,
-  relations: string[]
-) {
+export function joinRelations<T extends ObjectLiteral>(queryBuilder: SelectQueryBuilder<T>, relations: string[]) {
   relations.forEach((relation) => {
     let relationField = relation
     let alias = relation

@@ -4,6 +4,6 @@ import { IsUrl } from 'class-validator'
 @InputType()
 export class CreateTutorRequestInput {
   @IsUrl()
-  @Field(() => String)
+  @Field()
   cvImage: string
 }

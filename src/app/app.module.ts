@@ -5,8 +5,8 @@ import { APP_GUARD } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
 import * as Joi from 'joi'
 import { DatabaseModule } from 'src/database/database.module'
-import { JwtAuthGuard } from 'src/guard/auth.guard'
-import { RoleGuard } from 'src/guard/role.guard'
+import { JwtAuthGuard } from 'src/guards/auth.guard'
+import { RoleGuard } from 'src/guards/role.guard'
 import { AuthModule } from './auth/auth.module'
 import { ClassModule } from './class/class.module'
 import { CourseModule } from './course/course.module'
@@ -29,8 +29,9 @@ import { TutorReportModule } from './tutor-report/tutor-report.module'
 import { TutorRequestModule } from './tutor-request/tutor-request.module'
 import { TutorReviewModule } from './tutor-review/tutor-review.module'
 import { UserModule } from './user/user.module'
-import { UniqueStringConstraint } from 'src/decorator/unique-string.decorator'
-import { EntityExistsConstraint } from 'src/decorator/entity-exists.decorator'
+import { UniqueStringConstraint } from 'src/decorators/unique-string.decorator'
+import { EntityExistsConstraint } from 'src/decorators/entity-exists.decorator'
+import { GraphQLDate } from 'graphql-scalars'
 
 @Module({
   imports: [
@@ -44,7 +45,10 @@ import { EntityExistsConstraint } from 'src/decorator/entity-exists.decorator'
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true,
+      autoSchemaFile: 'schema.gql',
+      resolvers: {
+        Date: GraphQLDate,
+      },
     }),
     AuthModule,
     DatabaseModule,

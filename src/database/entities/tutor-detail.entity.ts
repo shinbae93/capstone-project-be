@@ -9,6 +9,14 @@ export class TutorDetail {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  headline: string
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  biography: string
+
   @Field()
   @Column()
   cvImage: string

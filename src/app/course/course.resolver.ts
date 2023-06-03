@@ -1,19 +1,21 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { User } from 'src/database/entities/user.entity'
-import { CurrentUser } from 'src/decorator/current-user.decorator'
+import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { Course } from '../../database/entities/course.entity'
 import { CourseService } from './course.service'
+import { CourseQueryParams } from './dto/course-query-params.input'
 import { CreateCourseInput } from './dto/create-course.input'
-import { UpdateCourseInput } from './dto/update-course.input'
 import { UpdateCourseStatusInput } from './dto/update-course-status.input'
+import { UpdateCourseInput } from './dto/update-course.input'
+import { CoursesPagination } from './dto/courses-pagination.output'
 
 @Resolver(() => Course)
 export class CourseResolver {
   constructor(private readonly courseService: CourseService) {}
 
-  @Query(() => [Course], { name: 'courses' })
-  findAll() {
-    return this.courseService.findAll()
+  @Query(() => CoursesPagination, { name: 'courses' })
+  findAll(@Args('queryParams') queryParams: CourseQueryParams) {
+    return this.courseService.findAll(queryParams)
   }
 
   @Query(() => Course, { name: 'course' })

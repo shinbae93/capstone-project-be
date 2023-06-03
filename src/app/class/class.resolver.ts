@@ -3,7 +3,7 @@ import { ClassService } from './class.service'
 import { Class } from '../../database/entities/class.entity'
 import { CreateClassInput } from './dto/create-class.input'
 import { UpdateClassInput } from './dto/update-class.input'
-import { CurrentUser } from 'src/decorator/current-user.decorator'
+import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { User } from 'src/database/entities/user.entity'
 
 @Resolver(() => Class)

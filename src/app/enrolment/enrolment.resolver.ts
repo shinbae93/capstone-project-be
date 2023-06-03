@@ -1,9 +1,9 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql'
-import { EnrolmentService } from './enrolment.service'
+import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { User } from 'src/database/entities/user.entity'
+import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { Enrolment } from '../../database/entities/enrolment.entity'
 import { CreateEnrolmentInput } from './dto/create-enrolment.input'
-import { CurrentUser } from 'src/decorator/current-user.decorator'
-import { User } from 'src/database/entities/user.entity'
+import { EnrolmentService } from './enrolment.service'
 
 @Resolver(() => Enrolment)
 export class EnrolmentResolver {

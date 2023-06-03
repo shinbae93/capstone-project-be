@@ -1,7 +1,7 @@
 import { Field, ID, InputType } from '@nestjs/graphql'
 import { CourseStatus } from 'src/common/enums'
 import { Course } from 'src/database/entities/course.entity'
-import { EntityExists } from 'src/decorator/entity-exists.decorator'
+import { EntityExists } from 'src/decorators/entity-exists.decorator'
 
 @InputType()
 export class UpdateCourseStatusInput {

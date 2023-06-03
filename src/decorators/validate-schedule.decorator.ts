@@ -6,7 +6,7 @@ import {
 } from 'class-validator'
 import { ERROR_MESSAGE } from 'src/common/error-message'
 import { ScheduleTime } from 'src/database/entities/sub-object/schedule-time'
-import { isScheduleTimeArrayOverllaped } from 'src/util/schedule'
+import { isScheduleTimeArrayOverllaped } from 'src/utils/schedule'
 
 @ValidatorConstraint()
 export class ValidateScheduleConstraint implements ValidatorConstraintInterface {

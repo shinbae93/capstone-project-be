@@ -15,6 +15,10 @@ export enum Gender {
   OTHER = 2,
 }
 
+registerEnumType(Gender, {
+  name: 'Gender',
+})
+
 export enum RoleId {
   ADMIN = 'b9961f54-9748-424d-9453-7dbeec05e212',
   TUTOR = '33358dbf-7697-4324-bccd-334a3691b84b',
@@ -34,10 +38,39 @@ registerEnumType(TutorRequestStatus, {
 })
 
 export enum CourseStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
+  UP_COMING = 'UP_COMING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  ENDED = 'ENDED',
 }
 
 registerEnumType(CourseStatus, {
   name: 'CourseStatus',
+})
+
+export enum EnrolmentStatus {
+  UP_COMING = 'UP_COMING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  FINISHED = 'FINISHED',
+}
+
+registerEnumType(EnrolmentStatus, {
+  name: 'EnrolmentStatus',
+})
+
+export enum SortDirection {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+
+registerEnumType(SortDirection, {
+  name: 'SortDirection',
+})
+
+export enum SortNullDirection {
+  NULLS_FIRST = 'NULLS FIRST',
+  NULLS_LAST = 'NULLS LAST',
+}
+
+registerEnumType(SortNullDirection, {
+  name: 'SortNullDirection',
 })

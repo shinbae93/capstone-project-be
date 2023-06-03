@@ -1,8 +1,7 @@
 import { Field, ID, InputType } from '@nestjs/graphql'
-import { CourseStatus } from 'src/common/enums'
 import { Grade } from 'src/database/entities/grade.entity'
 import { Subject } from 'src/database/entities/subject.entity'
-import { EntityExists } from 'src/decorator/entity-exists.decorator'
+import { EntityExists } from 'src/decorators/entity-exists.decorator'
 
 @InputType()
 export class CreateCourseInput {
@@ -12,8 +11,17 @@ export class CreateCourseInput {
   @Field()
   fee: number
 
-  @Field(() => CourseStatus, { nullable: true, defaultValue: CourseStatus.DRAFT })
-  status: string
+  @Field({ nullable: true, defaultValue: false })
+  isPublished: boolean
+
+  @Field({ nullable: true })
+  thumbnail: string
+
+  @Field({ nullable: true })
+  description: string
+
+  @Field(() => [String], { nullable: true })
+  objectives: string[]
 
   @Field()
   startDate: Date

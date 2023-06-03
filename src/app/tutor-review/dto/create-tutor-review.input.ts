@@ -1,7 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql'
 import { IsUrl, Max, Min, ValidateIf } from 'class-validator'
 import { User } from 'src/database/entities/user.entity'
-import { EntityExists } from 'src/decorator/entity-exists.decorator'
+import { EntityExists } from 'src/decorators/entity-exists.decorator'
 
 @InputType()
 export class CreateTutorReviewInput {

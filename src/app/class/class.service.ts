@@ -1,14 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { ERROR_MESSAGE } from 'src/common/error-message'
+import { Class } from 'src/database/entities/class.entity'
+import { Course } from 'src/database/entities/course.entity'
+import { ScheduleTime } from 'src/database/entities/sub-object/schedule-time'
+import { isTwoScheduleTimeArrayOverllaped } from 'src/utils/schedule'
+import { FindOptionsWhere, Repository } from 'typeorm'
 import { CreateClassInput } from './dto/create-class.input'
 import { UpdateClassInput } from './dto/update-class.input'
-import { InjectRepository } from '@nestjs/typeorm'
-import { Class } from 'src/database/entities/class.entity'
-import { FindOptionsWhere, Repository } from 'typeorm'
-import { ERROR_MESSAGE } from 'src/common/error-message'
-import { Course } from 'src/database/entities/course.entity'
-import { CourseStatus } from 'src/common/enums'
-import { isTwoScheduleTimeArrayOverllaped } from 'src/util/schedule'
-import { ScheduleTime } from 'src/database/entities/sub-object/schedule-time'
 
 @Injectable()
 export class ClassService {
@@ -21,7 +20,7 @@ export class ClassService {
     const courses = await this.courseRepository
       .createQueryBuilder()
       .where(`"Course"."userId" = :userId`, { userId })
-      .andWhere(`"Course".status = :status`, { status: CourseStatus.PUBLISHED })
+      .andWhere(`"Course".isPublished = TRUE`)
       .andWhere(`NOT ("Course"."startDate" > :endDate OR "Course"."endDate" < :startDate)`, {
         startDate: course.startDate,
         endDate: course.endDate,
@@ -66,7 +65,7 @@ export class ClassService {
     const record = await this.classRepository.findOneBy({ id })
     const course = await this.courseRepository.findOneBy({ id: record.courseId })
 
-    if (course.status === CourseStatus.PUBLISHED && input.schedule) {
+    if (course.isPublished && input.schedule) {
       throw new BadRequestException(ERROR_MESSAGE.CAN_NOT_UPDATE_SCHEDULE_OF_CLASS_OF_PUBLISHED_COURSE)
     }
 
@@ -85,7 +84,7 @@ export class ClassService {
       throw new BadRequestException(ERROR_MESSAGE.COURSE_NOT_FOUND)
     }
 
-    if (course.status === CourseStatus.PUBLISHED) {
+    if (course.isPublished) {
       throw new BadRequestException(ERROR_MESSAGE.CAN_NOT_DELETE_THIS_CLASS)
     }
 

@@ -1,6 +1,6 @@
 import { Field, ID, InputType, PartialType } from '@nestjs/graphql'
 import { CreateSubjectInput } from './create-subject.input'
-import { EntityExists } from 'src/decorator/entity-exists.decorator'
+import { EntityExists } from 'src/decorators/entity-exists.decorator'
 import { Subject } from 'src/database/entities/subject.entity'
 
 @InputType()

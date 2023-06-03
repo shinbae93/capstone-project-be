@@ -6,14 +6,29 @@ import { Course } from 'src/database/entities/course.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { ERROR_MESSAGE } from 'src/common/error-message'
 import { User } from 'src/database/entities/user.entity'
-import { CourseStatus } from 'src/common/enums'
+import { getCourseStatus } from 'src/utils/course'
+import { CourseQueryParams } from './dto/course-query-params.input'
+import { applySorting } from 'src/utils/query-builder'
+import { paginate, Pagination } from 'nestjs-typeorm-paginate'
 
 @Injectable()
 export class CourseService {
   constructor(@InjectRepository(Course) private courseRepository: Repository<Course>) {}
 
-  findAll() {
-    return this.courseRepository.find()
+  findAll(queryParams: CourseQueryParams): Promise<Pagination<Course>> {
+    const { sorting, pagination, statuses } = queryParams
+
+    const queryBuilder = this.courseRepository.createQueryBuilder()
+
+    if (statuses) {
+      queryBuilder.where(`"Course"."status" = ANY(:...statuses)`, { statuses })
+    }
+
+    if (sorting) {
+      applySorting(queryBuilder, sorting)
+    }
+
+    return paginate(queryBuilder, pagination)
   }
 
   async findOne(criteria: FindOptionsWhere<Course> | FindOptionsWhere<Course>[]): Promise<Course> {
@@ -31,8 +46,11 @@ export class CourseService {
   }
 
   async create(input: CreateCourseInput, currentUser: User): Promise<Course> {
+    const status = getCourseStatus(input.startDate, input.endDate)
+
     const request = this.courseRepository.create({
       ...input,
+      status,
       userId: currentUser.id,
     })
 
@@ -42,7 +60,7 @@ export class CourseService {
   async update(id: string, input: UpdateCourseInput): Promise<Course> {
     const course = await this.findOneIfExist({ id })
 
-    if (course.status === CourseStatus.PUBLISHED) {
+    if (course.isPublished) {
       throw new BadRequestException(ERROR_MESSAGE.CAN_NOT_UPDATE_PUBLISHED_COURSE)
     }
 
