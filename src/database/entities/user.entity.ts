@@ -64,9 +64,4 @@ export class User {
   @Field()
   @UpdateDateColumn()
   updatedAt: Date
-
-  static getRelations() {
-    const relations = ['role', 'tutorDetail']
-    return relations
-  }
 }

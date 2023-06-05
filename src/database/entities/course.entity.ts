@@ -62,7 +62,6 @@ export class Course {
   @Column()
   userId: string
 
-  @Field(() => User)
   @ManyToOne(() => User)
   user: User
 
@@ -70,7 +69,6 @@ export class Course {
   @Column()
   gradeId: string
 
-  @Field(() => Grade)
   @ManyToOne(() => Grade)
   grade: Grade
 
@@ -78,11 +76,9 @@ export class Course {
   @Column()
   subjectId: string
 
-  @Field(() => Subject)
   @ManyToOne(() => Subject)
   subject: Subject
 
-  @Field(() => [Class])
   @OneToMany(() => Class, (entity) => entity.course)
   classes: Class[]
 

@@ -1,0 +1,513 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type TutorDetail {
+  id: ID!
+  headline: String
+  biography: String
+  cvImage: String!
+  userId: ID!
+}
+
+type Role {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type User {
+  id: ID!
+  email: String!
+  fullName: String!
+  avatar: String
+  phoneNumber: String!
+  gender: Float!
+  birthday: DateTime!
+  roleId: String!
+  role: Role!
+  tutorDetail: TutorDetail!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type LoginOutput {
+  accessToken: String!
+}
+
+type LessonTime {
+  """Values from 0 to 23"""
+  hour: Float!
+
+  """Values from 0 to 59"""
+  minute: Float!
+}
+
+type ScheduleTime {
+  """Values from 0 to 6 equivalent to Sunday to Saturday"""
+  dayOfWeek: Float!
+  startTime: LessonTime!
+  endTime: LessonTime!
+}
+
+type Grade {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Subject {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Course {
+  id: ID!
+  name: String!
+  thumbnail: String
+  description: String
+  objectives: [String!]
+  fee: Float!
+  isPublished: Boolean!
+  status: CourseStatus!
+  startDate: Date!
+  endDate: Date!
+  userId: String!
+  gradeId: String!
+  subjectId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  grade: Grade!
+  subject: Subject!
+  classes: [Class!]
+  user: User!
+}
+
+enum CourseStatus {
+  UP_COMING
+  IN_PROGRESS
+  ENDED
+}
+
+"""
+A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+"""
+scalar Date
+
+type Class {
+  id: ID!
+  name: String!
+  method: ClassMethod!
+  schedule: [ScheduleTime!]!
+  courseId: String!
+  course: Course!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum ClassMethod {
+  ONLINE
+  OFFLINE
+}
+
+type PaginationMeta {
+  itemCount: Float!
+  totalItems: Float!
+  itemsPerPage: Float!
+  totalPages: Float!
+  currentPage: Float!
+}
+
+type CoursesPagination {
+  meta: PaginationMeta!
+  items: [Course!]!
+}
+
+type Document {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Enrolment {
+  id: ID!
+  isFinished: Boolean!
+  status: EnrolmentStatus!
+  userId: ID!
+  user: User!
+  courseId: ID!
+  course: Course!
+  classId: ID!
+  class: Class!
+}
+
+enum EnrolmentStatus {
+  UP_COMING
+  IN_PROGRESS
+  FINISHED
+}
+
+type LessonComment {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Lesson {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Payment {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Quiz {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type TutorReport {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type TutorRequest {
+  id: ID!
+  cvImage: String!
+  status: TutorRequestStatus!
+  userId: String!
+  user: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum TutorRequestStatus {
+  PENDING
+  PROCESSING
+  ACCEPTED
+  CANCELED
+  REJECTED
+}
+
+type TutorReview {
+  id: ID!
+  comment: String!
+  images: [String!]
+  rating: Float!
+  authorId: String!
+  author: User!
+  tutorId: String!
+  tutor: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input LessonTimeInput {
+  """Values from 0 to 23"""
+  hour: Float!
+
+  """Values from 0 to 59"""
+  minute: Float!
+}
+
+input ScheduleTimeInput {
+  """Values from 0 to 6 equivalent to Sunday to Saturday"""
+  dayOfWeek: Float!
+  startTime: LessonTimeInput!
+  endTime: LessonTimeInput!
+}
+
+type Query {
+  getMe: User!
+  getUser(id: ID!): User!
+  getUsers: [User!]!
+  tutorDetail(id: ID!): TutorDetail!
+  grades: [Grade!]!
+  grade(id: ID!): Grade!
+  subjects: [Subject!]!
+  subject(id: ID!): Subject!
+  courses(queryParams: CourseQueryParams!): CoursesPagination!
+  course(id: ID!): Course!
+  classes: [Class!]!
+  class(id: ID!): Class!
+  lesson(id: Int!): Lesson!
+  enrolments: [Enrolment!]!
+  enrolment(id: ID!): Enrolment!
+  tutorReport(id: Int!): TutorReport!
+  tutorReviews: [TutorReview!]!
+  tutorReview(id: ID!): TutorReview!
+  lessonComment(id: Int!): LessonComment!
+  payment(id: Int!): Payment!
+  document(id: Int!): Document!
+  quiz(id: Int!): Quiz!
+  tutorRequests: [TutorRequest!]!
+  tutorRequest(id: ID!): TutorRequest!
+}
+
+input CourseQueryParams {
+  pagination: PaginateOptions
+  sorting: [SortField!]
+  statuses: [CourseStatus!]
+}
+
+input PaginateOptions {
+  limit: Float!
+  page: Float!
+}
+
+input SortField {
+  field: String!
+  direction: SortDirection!
+  nulls: SortNullDirection
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+enum SortNullDirection {
+  NULLS_FIRST
+  NULLS_LAST
+}
+
+type Mutation {
+  login(input: LoginInput!): LoginOutput!
+  logout(refreshToken: String!): Boolean!
+  register(input: RegisterInput!): User!
+  deleteUser(id: ID!): User!
+  updateTutorDetail(input: UpdateTutorDetailInput!): TutorDetail!
+  createGrade(input: CreateGradeInput!): Grade!
+  updateGrade(input: UpdateGradeInput!): Grade!
+  removeGrade(id: ID!): Grade!
+  createSubject(input: CreateSubjectInput!): Subject!
+  updateSubject(input: UpdateSubjectInput!): Subject!
+  removeSubject(id: ID!): Boolean!
+  createCourse(input: CreateCourseInput!): Course!
+  updateCourse(input: UpdateCourseInput!): Course!
+  updateCourseStatus(input: UpdateCourseStatusInput!): Course!
+  removeCourse(id: ID!): Course!
+  createClass(input: CreateClassInput!): Class!
+  updateClass(input: UpdateClassInput!): Class!
+  removeClass(id: ID!): Boolean!
+  createLesson(createLessonInput: CreateLessonInput!): Lesson!
+  updateLesson(updateLessonInput: UpdateLessonInput!): Lesson!
+  removeLesson(id: Int!): Lesson!
+  createEnrolment(input: CreateEnrolmentInput!): Enrolment!
+  removeEnrolment(id: ID!): Boolean!
+  createTutorReport(createTutorReportInput: CreateTutorReportInput!): TutorReport!
+  updateTutorReport(updateTutorReportInput: UpdateTutorReportInput!): TutorReport!
+  removeTutorReport(id: Int!): TutorReport!
+  createTutorReview(input: CreateTutorReviewInput!): TutorReview!
+  updateTutorReview(input: UpdateTutorReviewInput!): TutorReview!
+  removeTutorReview(id: ID!): Boolean!
+  createLessonComment(createLessonCommentInput: CreateLessonCommentInput!): LessonComment!
+  updateLessonComment(updateLessonCommentInput: UpdateLessonCommentInput!): LessonComment!
+  removeLessonComment(id: Int!): LessonComment!
+  createPayment(createPaymentInput: CreatePaymentInput!): Payment!
+  updatePayment(updatePaymentInput: UpdatePaymentInput!): Payment!
+  removePayment(id: Int!): Payment!
+  createDocument(createDocumentInput: CreateDocumentInput!): Document!
+  updateDocument(updateDocumentInput: UpdateDocumentInput!): Document!
+  removeDocument(id: Int!): Document!
+  createQuiz(createQuizInput: CreateQuizInput!): Quiz!
+  updateQuiz(updateQuizInput: UpdateQuizInput!): Quiz!
+  removeQuiz(id: Int!): Quiz!
+  createTutorRequest(input: CreateTutorRequestInput!): TutorRequest!
+  updateTutorRequest(input: UpdateTutorRequestInput!): TutorRequest!
+  updateTutorRequestStatus(input: UpdateTutorRequestStatusInput!): TutorRequest!
+  removeTutorRequest(id: ID!): Boolean!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  fullName: String!
+  avatar: String
+  phoneNumber: String!
+  gender: Float!
+  birthday: DateTime!
+}
+
+input UpdateTutorDetailInput {
+  id: ID!
+  cvImage: String!
+}
+
+input CreateGradeInput {
+  name: String!
+  subjectIds: [String!]
+}
+
+input UpdateGradeInput {
+  name: String
+  subjectIds: [String!]
+  id: ID!
+}
+
+input CreateSubjectInput {
+  name: String!
+  gradeIds: [String!]
+}
+
+input UpdateSubjectInput {
+  name: String
+  gradeIds: [String!]
+  id: ID!
+}
+
+input CreateCourseInput {
+  name: String!
+  fee: Float!
+  isPublished: Boolean = false
+  thumbnail: String
+  description: String
+  objectives: [String!]
+  startDate: DateTime!
+  endDate: DateTime!
+  gradeId: ID!
+  subjectId: ID!
+}
+
+input UpdateCourseInput {
+  name: String
+  fee: Float
+  thumbnail: String
+  description: String
+  objectives: [String!]
+  startDate: DateTime
+  endDate: DateTime
+  id: ID!
+}
+
+input UpdateCourseStatusInput {
+  id: ID!
+  status: CourseStatus!
+}
+
+input CreateClassInput {
+  name: String!
+  method: ClassMethod!
+  schedule: [ScheduleTimeInput!]!
+  courseId: String!
+}
+
+input UpdateClassInput {
+  name: String
+  method: ClassMethod
+  schedule: [ScheduleTimeInput!]
+  id: ID!
+}
+
+input CreateLessonInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateLessonInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateEnrolmentInput {
+  courseId: ID!
+  classId: ID!
+}
+
+input CreateTutorReportInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateTutorReportInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateTutorReviewInput {
+  comment: String!
+  rating: Float!
+  images: [String!]
+  tutorId: String!
+}
+
+input UpdateTutorReviewInput {
+  comment: String
+  rating: Float
+  images: [String!]
+  id: ID!
+}
+
+input CreateLessonCommentInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateLessonCommentInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreatePaymentInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdatePaymentInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateDocumentInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateDocumentInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateQuizInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateQuizInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateTutorRequestInput {
+  cvImage: String!
+}
+
+input UpdateTutorRequestInput {
+  cvImage: String
+  id: ID!
+}
+
+input UpdateTutorRequestStatusInput {
+  id: ID!
+  status: TutorRequestStatus!
+}

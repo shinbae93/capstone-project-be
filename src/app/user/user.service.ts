@@ -4,7 +4,7 @@ import { RoleId } from 'src/common/enums'
 import { ERROR_MESSAGE } from 'src/common/error-message'
 import { TutorDetail } from 'src/database/entities/tutor-detail.entity'
 import { User } from 'src/database/entities/user.entity'
-import { FindOptionsWhere, Repository } from 'typeorm'
+import { FindOptionsWhere, In, Repository } from 'typeorm'
 
 @Injectable()
 export class UserService {
@@ -27,11 +27,13 @@ export class UserService {
     return this.userRepository.find()
   }
 
+  findManyByIds(ids: string[]) {
+    return this.userRepository.findBy({ id: In(ids) })
+  }
+
   async createTutor(id: string, cvImage: string) {
     await this.userRepository.update({ id }, { roleId: RoleId.TUTOR })
-    await this.tutorDetailRepository.save(
-      this.tutorDetailRepository.create({ cvImage, userId: id })
-    )
+    await this.tutorDetailRepository.save(this.tutorDetailRepository.create({ cvImage, userId: id }))
   }
 
   async delete(id: string) {

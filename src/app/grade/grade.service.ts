@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { CreateGradeInput } from './dto/create-grade.input'
-import { UpdateGradeInput } from './dto/update-grade.input'
 import { InjectRepository } from '@nestjs/typeorm'
+import { ERROR_MESSAGE } from 'src/common/error-message'
 import { Grade } from 'src/database/entities/grade.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { ERROR_MESSAGE } from 'src/common/error-message'
 import { SubjectMapGradeService } from '../subject-map-grade/subject-map-grade.service'
+import { CreateGradeInput } from './dto/create-grade.input'
+import { UpdateGradeInput } from './dto/update-grade.input'
 
 @Injectable()
 export class GradeService {
@@ -16,6 +16,10 @@ export class GradeService {
 
   findAll() {
     return this.gradeRepository.find()
+  }
+
+  findMany(criteria: FindOptionsWhere<Grade> | FindOptionsWhere<Grade>[]) {
+    return this.gradeRepository.findBy(criteria)
   }
 
   async findOne(criteria: FindOptionsWhere<Grade> | FindOptionsWhere<Grade>[]): Promise<Grade> {

@@ -51,6 +51,10 @@ export class ClassService {
     return this.classRepository.find()
   }
 
+  findMany(criteria: FindOptionsWhere<Class> | FindOptionsWhere<Class>[]) {
+    return this.classRepository.findBy(criteria)
+  }
+
   async findOne(criteria: FindOptionsWhere<Class> | FindOptionsWhere<Class>[]) {
     const record = await this.classRepository.findOneBy(criteria)
 

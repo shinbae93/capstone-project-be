@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { ERROR_MESSAGE } from 'src/common/error-message'
 import { Subject } from 'src/database/entities/subject.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
+import { SubjectMapGradeService } from '../subject-map-grade/subject-map-grade.service'
 import { CreateSubjectInput } from './dto/create-subject.input'
 import { UpdateSubjectInput } from './dto/update-subject.input'
-import { SubjectMapGradeService } from '../subject-map-grade/subject-map-grade.service'
 
 @Injectable()
 export class SubjectService {
@@ -18,9 +18,11 @@ export class SubjectService {
     return this.subjectRepository.find()
   }
 
-  async findOne(
-    criteria: FindOptionsWhere<Subject> | FindOptionsWhere<Subject>[]
-  ): Promise<Subject> {
+  findMany(criteria: FindOptionsWhere<Subject> | FindOptionsWhere<Subject>[]) {
+    return this.subjectRepository.findBy(criteria)
+  }
+
+  async findOne(criteria: FindOptionsWhere<Subject> | FindOptionsWhere<Subject>[]): Promise<Subject> {
     const tutorRequest = await this.subjectRepository.findOneBy(criteria)
 
     if (!tutorRequest) {
