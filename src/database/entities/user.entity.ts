@@ -45,6 +45,9 @@ export class User {
   @Column()
   birthday: Date
 
+  @Column({ nullable: true })
+  refreshToken: string
+
   @Field()
   @Column()
   roleId: string

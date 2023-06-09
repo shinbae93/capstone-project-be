@@ -5,24 +5,31 @@ import { LoginInput } from './dto/login.input'
 import { LoginOutput } from './dto/login.output'
 import { RegisterInput } from './dto/register.input'
 import { Public } from 'src/decorators/public.decorator'
+import { CurrentUser } from 'src/decorators/current-user.decorator'
 
-@Public()
 @Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Mutation(() => LoginOutput, { name: 'login' })
   async login(@Args('input') input: LoginInput): Promise<LoginOutput> {
     return await this.authService.login(input.email, input.password)
   }
 
   @Mutation(() => Boolean, { name: 'logout' })
-  async logout(@Args('refreshToken') refreshToken: string): Promise<boolean> {
-    return await this.authService.logout(refreshToken)
+  async logout(@CurrentUser() curUser: User): Promise<boolean> {
+    return await this.authService.logout(curUser)
   }
 
+  @Public()
   @Mutation(() => User, { name: 'register' })
   async register(@Args('input') input: RegisterInput): Promise<User> {
     return await this.authService.register(input)
+  }
+
+  @Mutation(() => String, { name: 'refreshToken' })
+  async refreshToken(@Args('token') token: string, @CurrentUser() curUser: User): Promise<string> {
+    return await this.authService.refreshToken(token, curUser.id)
   }
 }

@@ -17,9 +17,6 @@ export class AddUserAndRole1683969641983 implements MigrationInterface {
       `CREATE TABLE "subject" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "level" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_12eee115462e38d62e5455fc054" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
-      `CREATE TABLE "token" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "refreshToken" character varying NOT NULL, "userId" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_82fae97f905930df5d62a702fc9" PRIMARY KEY ("id"))`
-    )
-    await queryRunner.query(
       `CREATE TABLE "user" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "email" character varying NOT NULL, "password" character varying NOT NULL, "fullName" character varying NOT NULL, "phoneNumber" character varying NOT NULL, "gender" integer NOT NULL, "birthday" TIMESTAMP NOT NULL, "roleId" uuid NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "UQ_f2578043e491921209f5dadd080" UNIQUE ("phoneNumber"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`
     )
     await queryRunner.query(
@@ -44,7 +41,6 @@ export class AddUserAndRole1683969641983 implements MigrationInterface {
     await queryRunner.query(`DROP INDEX "public"."IDX_0591590c2e4de3d1db85f49afc"`)
     await queryRunner.query(`DROP TABLE "tutor_detail"`)
     await queryRunner.query(`DROP TABLE "user"`)
-    await queryRunner.query(`DROP TABLE "token"`)
     await queryRunner.query(`DROP TABLE "subject"`)
     await queryRunner.query(`DROP TABLE "subject_map_grade"`)
     await queryRunner.query(`DROP TABLE "role"`)

@@ -45,7 +45,7 @@ import { GraphQLDate } from 'graphql-scalars'
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'schema.gql',
+      autoSchemaFile: true,
       resolvers: {
         Date: GraphQLDate,
       },

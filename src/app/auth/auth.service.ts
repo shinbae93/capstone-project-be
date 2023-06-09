@@ -4,21 +4,21 @@ import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcrypt'
 import { RoleId } from 'src/common/enums'
 import { ERROR_MESSAGE } from 'src/common/error-message'
-import { Token } from 'src/database/entities/token.entity'
 import { User } from 'src/database/entities/user.entity'
 import { Repository } from 'typeorm'
 import { LoginOutput } from './dto/login.output'
 import { RegisterInput } from './dto/register.input'
 import { JwtPayload } from './interfaces/jwt-payload.interface'
+import { ConfigService } from '@nestjs/config'
 
 const SALT_ROUND = 10
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Token) private tokenRepository: Repository<Token>,
     @InjectRepository(User) private userRepository: Repository<User>,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private configService: ConfigService
   ) {}
 
   async hashPassword(password: string) {
@@ -47,10 +47,19 @@ export class AuthService {
       role: user.roleId,
     }
 
-    const accessToken = await this.jwtService.signAsync(payload)
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
+      }),
+    ])
+
+    await this.userRepository.update({ id: user.id }, { refreshToken })
 
     return {
       accessToken,
+      refreshToken,
     }
   }
 
@@ -68,9 +77,31 @@ export class AuthService {
     return await this.userRepository.save(newUser)
   }
 
-  async logout(refreshToken: string): Promise<boolean> {
-    await this.tokenRepository.delete({ refreshToken })
-
+  async logout(user: User): Promise<boolean> {
+    await this.userRepository.update({ id: user.id }, { refreshToken: null })
     return true
+  }
+
+  async refreshToken(token: string, userId: string): Promise<string> {
+    const user = await this.userRepository.findOneBy({ id: userId })
+
+    this.jwtService.verify(user.refreshToken, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+    })
+
+    if (token !== user.refreshToken) {
+      console.log('🚀 ~ file: auth.service.ts:93 ~ AuthService ~ refreshToken ~ user.refreshToken:', user.refreshToken)
+      console.log('🚀 ~ file: auth.service.ts:93 ~ AuthService ~ refreshToken ~ token:', token)
+      throw new UnauthorizedException()
+    }
+
+    const payload: JwtPayload = {
+      id: user.id,
+      fullname: user.fullName,
+      email: user.email,
+      role: user.roleId,
+    }
+
+    return this.jwtService.signAsync(payload)
   }
 }
