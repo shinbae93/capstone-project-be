@@ -11,5 +11,5 @@ export class UpdateTutorDetailInput {
 
   @IsUrl()
   @Field()
-  cvImage: string
+  cv: string
 }

@@ -31,9 +31,9 @@ export class UserService {
     return this.userRepository.findBy({ id: In(ids) })
   }
 
-  async createTutor(id: string, cvImage: string) {
+  async createTutor(id: string, cv: string) {
     await this.userRepository.update({ id }, { roleId: RoleId.TUTOR })
-    await this.tutorDetailRepository.save(this.tutorDetailRepository.create({ cvImage, userId: id }))
+    await this.tutorDetailRepository.save(this.tutorDetailRepository.create({ cv, userId: id }))
   }
 
   async delete(id: string) {

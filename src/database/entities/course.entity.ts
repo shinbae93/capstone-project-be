@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql'
+import { ObjectType, Field, ID, Int } from '@nestjs/graphql'
 import {
   Column,
   CreateDateColumn,
@@ -42,9 +42,17 @@ export class Course {
   @Column({ type: 'float' })
   fee: number
 
+  @Field(() => Int, { nullable: true })
+  @Column({ type: 'int', default: 30 })
+  paymentDate: number
+
   @Field()
   @Column({ default: false })
   isPublished: boolean
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  publishedAt: Date
 
   @Field(() => CourseStatus)
   @Column()
@@ -57,6 +65,9 @@ export class Course {
   @Field(() => GraphQLDate)
   @Column({ type: 'date' })
   endDate: Date
+
+  @Field()
+  duration: number
 
   @Field()
   @Column()

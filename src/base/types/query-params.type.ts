@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql'
+import { Field, InputType, Int } from '@nestjs/graphql'
 import { SortDirection, SortNullDirection } from 'src/common/enums'
 
 @InputType()
@@ -15,16 +15,22 @@ export class SortField {
 
 @InputType()
 export class PaginateOptions {
-  @Field()
+  @Field(() => Int, { description: 'Default value is 20' })
   limit: number
 
-  @Field()
+  @Field(() => Int, { description: 'Default value is 1' })
   page: number
 }
 
 @InputType()
 export class QueryParams {
-  @Field(() => PaginateOptions, { nullable: true })
+  @Field(() => PaginateOptions, {
+    nullable: true,
+    defaultValue: {
+      limit: 20,
+      page: 1,
+    },
+  })
   pagination: PaginateOptions
 
   @Field(() => [SortField], { nullable: true })

@@ -32,6 +32,8 @@ import { UserModule } from './user/user.module'
 import { UniqueStringConstraint } from 'src/decorators/unique-string.decorator'
 import { EntityExistsConstraint } from 'src/decorators/entity-exists.decorator'
 import { GraphQLDate } from 'graphql-scalars'
+import { UniqueConstraint } from 'src/decorators/unique.decorator'
+import { GraphQLError } from 'graphql'
 
 @Module({
   imports: [
@@ -41,6 +43,11 @@ import { GraphQLDate } from 'graphql-scalars'
         DATABASE_URL: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.number().required(),
+        JWT_REFRESH_SECRET: Joi.string().required(),
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().required(),
+        AWS_ACCESS_KEY: Joi.string().required(),
+        AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+        AWS_S3_BUCKET_NAME: Joi.string().required(),
       }),
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -48,6 +55,19 @@ import { GraphQLDate } from 'graphql-scalars'
       autoSchemaFile: true,
       resolvers: {
         Date: GraphQLDate,
+      },
+      formatError: (error: GraphQLError) => {
+        const graphqlError = (error.extensions?.originalError as any)?.message
+        let message = graphqlError || error.message
+
+        if (graphqlError && Array.isArray(graphqlError)) {
+          message = graphqlError.join('.')
+        }
+
+        return {
+          ...error,
+          message,
+        }
       },
     }),
     AuthModule,
@@ -85,6 +105,7 @@ import { GraphQLDate } from 'graphql-scalars'
     },
     UniqueStringConstraint,
     EntityExistsConstraint,
+    UniqueConstraint,
   ],
 })
 export class AppModule {}

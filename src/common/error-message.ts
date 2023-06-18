@@ -20,4 +20,6 @@ export const ERROR_MESSAGE = {
   CAN_NOT_DELETE_THIS_CLASS: 'Can not delete this class.',
   INVALID_SCHEDULE: 'Invalid schedule.',
   ENROLMENT_NOT_FOUND: 'Enrolment not found.',
+  NAME_OF_CLASS_IS_ALREADY_EXISTED: "Class's name is already existed.",
+  COURSE_IS_ALREADY_PUBLISHED: 'Course is already published.',
 }

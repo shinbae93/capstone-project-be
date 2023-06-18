@@ -20,7 +20,7 @@ export class ClassService {
     const courses = await this.courseRepository
       .createQueryBuilder()
       .where(`"Course"."userId" = :userId`, { userId })
-      .andWhere(`"Course".isPublished = TRUE`)
+      .andWhere(`"Course"."isPublished" = TRUE`)
       .andWhere(`NOT ("Course"."startDate" > :endDate OR "Course"."endDate" < :startDate)`, {
         startDate: course.startDate,
         endDate: course.endDate,
@@ -37,18 +37,39 @@ export class ClassService {
     }
   }
 
+  async validateClassName(name: string, id?: string) {
+    const queryBuilder = this.classRepository.createQueryBuilder().where(`LOWER("Class"."name") = (:name)`, { name })
+
+    if (id) {
+      queryBuilder.andWhere(`"Class"."id" != :id`, { id })
+    }
+
+    const duplicatedClassesCount = await queryBuilder.getCount()
+
+    if (duplicatedClassesCount) {
+      throw new BadRequestException(ERROR_MESSAGE.NAME_OF_CLASS_IS_ALREADY_EXISTED)
+    }
+  }
+
   async create(input: CreateClassInput, userId: string) {
     const course = await this.courseRepository.findOneBy({ id: input.courseId })
 
     await this.validateClassSchedule(course, userId, input.schedule)
+    await this.validateClassName(input.name)
 
     const record = this.classRepository.create(input)
 
     return await this.classRepository.save(record)
   }
 
-  findAll() {
-    return this.classRepository.find()
+  findAll(courseId: string) {
+    const builder = this.classRepository.createQueryBuilder()
+
+    if (courseId) {
+      builder.andWhere({ courseId })
+    }
+
+    return builder.getMany()
   }
 
   findMany(criteria: FindOptionsWhere<Class> | FindOptionsWhere<Class>[]) {
@@ -73,6 +94,7 @@ export class ClassService {
       throw new BadRequestException(ERROR_MESSAGE.CAN_NOT_UPDATE_SCHEDULE_OF_CLASS_OF_PUBLISHED_COURSE)
     }
 
+    input.name && (await this.validateClassName(input.name, id))
     await this.validateClassSchedule(course, userId, input.schedule)
 
     this.classRepository.merge(record, input)

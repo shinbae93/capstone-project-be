@@ -1,22 +1,58 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { CreateEnrolmentInput } from './dto/create-enrolment.input'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Enrolment } from 'src/database/entities/enrolment.entity'
-import { FindOptionsWhere, Repository } from 'typeorm'
+import { GraphQLResolveInfo } from 'graphql'
+import { paginate } from 'nestjs-typeorm-paginate'
 import { ERROR_MESSAGE } from 'src/common/error-message'
+import { Class } from 'src/database/entities/class.entity'
+import { Enrolment } from 'src/database/entities/enrolment.entity'
+import { hasSelectedField } from 'src/utils/graphql'
+import { applySorting } from 'src/utils/query-builder'
+import { FindOptionsWhere, Repository } from 'typeorm'
+import { CreateEnrolmentInput } from './dto/create-enrolment.input'
+import { EnrolmentQueryParams } from './dto/enrolment-query-params.input'
 
 @Injectable()
 export class EnrolmentService {
-  constructor(@InjectRepository(Enrolment) private enrolmentRepository: Repository<Enrolment>) {}
+  constructor(
+    @InjectRepository(Enrolment) private enrolmentRepository: Repository<Enrolment>,
+    @InjectRepository(Class) private classRepository: Repository<Class>
+  ) {}
 
-  async create(input: CreateEnrolmentInput, userId: string) {
-    const enrolment = this.enrolmentRepository.create({ ...input, userId })
-
-    return await this.enrolmentRepository.save(enrolment)
+  getCountByClass(classId: string) {
+    return this.enrolmentRepository.countBy({ classId })
   }
 
-  findAll() {
-    return this.enrolmentRepository.find()
+  async create(input: CreateEnrolmentInput, userId: string) {
+    const data = await this.classRepository.findOneBy({ id: input.classId })
+    if (!data) {
+      throw new BadRequestException(ERROR_MESSAGE.CLASS_NOT_FOUND)
+    }
+
+    const enrolment = this.enrolmentRepository.create({ ...input, courseId: data.courseId, userId })
+
+    return this.enrolmentRepository.save(enrolment)
+  }
+
+  findAll(queryParams: EnrolmentQueryParams, info: GraphQLResolveInfo) {
+    const { sorting, pagination } = queryParams
+
+    const queryBuilder = this.enrolmentRepository.createQueryBuilder()
+
+    if (hasSelectedField(info, ['items', 'course'])) {
+      queryBuilder.innerJoinAndSelect('Enrolment.course', 'Course', 'Enrolment.courseId = Course.id')
+
+      if (queryParams.filters?.statuses) {
+        const { statuses } = queryParams.filters
+
+        queryBuilder.andWhere(`"Course"."status" = ANY(ARRAY[:...statuses])`, { statuses })
+      }
+    }
+
+    if (sorting) {
+      applySorting(queryBuilder, sorting)
+    }
+
+    return paginate(queryBuilder, pagination)
   }
 
   async findOne(criteria: FindOptionsWhere<Enrolment> | FindOptionsWhere<Enrolment>[]): Promise<Enrolment> {

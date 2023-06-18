@@ -1,14 +1,21 @@
-import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql'
-import { ClassService } from './class.service'
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql'
+import { Course } from 'src/database/entities/course.entity'
+import { User } from 'src/database/entities/user.entity'
+import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { Class } from '../../database/entities/class.entity'
+import { EnrolmentService } from '../enrolment/enrolment.service'
+import { ClassLoader } from './class.loader'
+import { ClassService } from './class.service'
 import { CreateClassInput } from './dto/create-class.input'
 import { UpdateClassInput } from './dto/update-class.input'
-import { CurrentUser } from 'src/decorators/current-user.decorator'
-import { User } from 'src/database/entities/user.entity'
 
 @Resolver(() => Class)
 export class ClassResolver {
-  constructor(private readonly classService: ClassService) {}
+  constructor(
+    private readonly classService: ClassService,
+    private readonly classLoader: ClassLoader,
+    private readonly enrolmentservice: EnrolmentService
+  ) {}
 
   @Mutation(() => Class)
   createClass(@Args('input') input: CreateClassInput, @CurrentUser() currentUser: User) {
@@ -16,8 +23,8 @@ export class ClassResolver {
   }
 
   @Query(() => [Class], { name: 'classes' })
-  findAll() {
-    return this.classService.findAll()
+  findAll(@Args('courseId', { type: () => ID, nullable: true }) courseId: string) {
+    return this.classService.findAll(courseId)
   }
 
   @Query(() => Class, { name: 'class' })
@@ -33,5 +40,17 @@ export class ClassResolver {
   @Mutation(() => Boolean)
   removeClass(@Args('id', { type: () => ID }) id: string) {
     return this.classService.remove(id)
+  }
+
+  @ResolveField('course', () => Course)
+  async getCourse(@Parent() parent: Class) {
+    const { courseId } = parent
+    return this.classLoader.batchCourses.load(courseId)
+  }
+
+  @ResolveField('occupiedSlots', () => Number)
+  async getOccupiedSlots(@Parent() parent: Class) {
+    const { id } = parent
+    return this.enrolmentservice.getCountByClass(id)
   }
 }

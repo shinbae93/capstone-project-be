@@ -10,6 +10,7 @@ import {
 } from 'typeorm'
 import { TutorDetail } from './tutor-detail.entity'
 import { Role } from './role.entity'
+import { GraphQLDate } from 'graphql-scalars'
 
 @ObjectType()
 @Entity()
@@ -41,8 +42,8 @@ export class User {
   @Column()
   gender: number
 
-  @Field()
-  @Column()
+  @Field(() => GraphQLDate)
+  @Column({ type: 'date' })
   birthday: Date
 
   @Column({ nullable: true })

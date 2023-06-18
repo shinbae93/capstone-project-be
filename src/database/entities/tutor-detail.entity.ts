@@ -19,7 +19,7 @@ export class TutorDetail {
 
   @Field()
   @Column()
-  cvImage: string
+  cv: string
 
   @Field(() => ID)
   @Column()

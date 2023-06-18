@@ -1,13 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
 import { TutorRequestStatus } from 'src/common/enums'
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm'
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { User } from './user.entity'
 
 @ObjectType()
@@ -19,7 +12,7 @@ export class TutorRequest {
 
   @Field()
   @Column()
-  cvImage: string
+  cv: string
 
   @Field(() => TutorRequestStatus)
   @Column()

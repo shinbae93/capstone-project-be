@@ -4,10 +4,17 @@ import { UserService } from './user.service'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
 import { UserLoader } from './user.loader'
 import { Role } from 'src/database/entities/role.entity'
+import { TutorDetail } from 'src/database/entities/tutor-detail.entity'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService, private userLoader: UserLoader) {}
+  constructor(
+    private readonly userService: UserService,
+    private userLoader: UserLoader,
+    @InjectRepository(TutorDetail) private tutorDetailRepository: Repository<TutorDetail>
+  ) {}
 
   @Query(() => User, { name: 'getMe' })
   findMe(@CurrentUser() user: User) {
@@ -33,5 +40,11 @@ export class UserResolver {
   async getRole(@Parent() user: User) {
     const { roleId } = user
     return this.userLoader.batchRoles.load(roleId)
+  }
+
+  @ResolveField('tutorDetail', () => TutorDetail)
+  async getTutorDetail(@Parent() user: User) {
+    const { id } = user
+    return this.tutorDetailRepository.findOneBy({ userId: id })
   }
 }

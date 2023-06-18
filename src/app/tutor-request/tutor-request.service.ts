@@ -33,10 +33,10 @@ export class TutorRequestService {
       throw new BadRequestException(ERROR_MESSAGE.YOU_ARE_ALREADY_A_TUTOR)
     }
 
-    const { cvImage } = input
+    const { cv } = input
 
     const request = this.tutorRequestRepository.create({
-      cvImage,
+      cv,
       userId: currentUser.id,
       status: TutorRequestStatus.PENDING,
     })
@@ -72,7 +72,7 @@ export class TutorRequestService {
     }
 
     if (status === TutorRequestStatus.ACCEPTED) {
-      await this.userService.createTutor(tutorRequest.userId, tutorRequest.cvImage)
+      await this.userService.createTutor(tutorRequest.userId, tutorRequest.cv)
     }
 
     this.tutorRequestRepository.merge(tutorRequest, input)

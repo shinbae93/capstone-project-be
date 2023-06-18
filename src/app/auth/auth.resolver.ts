@@ -28,6 +28,7 @@ export class AuthResolver {
     return await this.authService.register(input)
   }
 
+  @Public()
   @Mutation(() => String, { name: 'refreshToken' })
   async refreshToken(@Args('token') token: string, @CurrentUser() curUser: User): Promise<string> {
     return await this.authService.refreshToken(token, curUser.id)

@@ -19,6 +19,13 @@ export class Class {
   @Column()
   method: string
 
+  @Field()
+  @Column({ default: 0 })
+  totalSlots: number
+
+  @Field({ defaultValue: 0 })
+  occupiedSlots: number
+
   @Field(() => [ScheduleTime])
   @Column({ type: 'jsonb' })
   schedule: ScheduleTime[]

@@ -1,19 +1,24 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { IsDate, IsEmail, IsIn, IsNotEmpty, IsPhoneNumber, IsUrl, ValidateIf } from 'class-validator'
+import { IsDate, IsEmail, IsPhoneNumber, IsUrl, ValidateIf } from 'class-validator'
+import { Gender } from 'src/common/enums'
+import { User } from 'src/database/entities/user.entity'
+import { Match } from 'src/decorators/match.decorator'
+import { Unique } from 'src/decorators/unique.decorator'
 
 @InputType()
 export class RegisterInput {
-  @Field()
-  @IsNotEmpty()
   @IsEmail()
+  @Field()
   email: string
 
   @Field()
-  @IsNotEmpty()
   password: string
 
+  @Match('password')
   @Field()
-  @IsNotEmpty()
+  confirmPassword: string
+
+  @Field()
   fullName: string
 
   @ValidateIf((_, value) => value != null)
@@ -21,18 +26,15 @@ export class RegisterInput {
   @Field({ nullable: true })
   avatar: string
 
-  @Field()
-  @IsNotEmpty()
   @IsPhoneNumber('VN')
+  @Unique(User)
+  @Field()
   phoneNumber: string
 
-  @Field()
-  @IsNotEmpty()
-  @IsIn([0, 1, 2])
+  @Field(() => Gender)
   gender: number
 
-  @Field()
-  @IsNotEmpty()
   @IsDate()
+  @Field()
   birthday: Date
 }
