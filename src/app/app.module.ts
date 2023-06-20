@@ -34,6 +34,8 @@ import { EntityExistsConstraint } from 'src/decorators/entity-exists.decorator'
 import { GraphQLDate } from 'graphql-scalars'
 import { UniqueConstraint } from 'src/decorators/unique.decorator'
 import { GraphQLError } from 'graphql'
+import { CalendarModule } from './calendar/calendar.module';
+import { StripeModule } from './stripe/stripe.module';
 
 @Module({
   imports: [
@@ -48,6 +50,9 @@ import { GraphQLError } from 'graphql'
         AWS_ACCESS_KEY: Joi.string().required(),
         AWS_SECRET_ACCESS_KEY: Joi.string().required(),
         AWS_S3_BUCKET_NAME: Joi.string().required(),
+        STRIPE_SECRET_KEY: Joi.string(),
+        STRIPE_CURRENCY: Joi.string(),
+        FRONTEND_URL: Joi.string(),
       }),
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -93,6 +98,8 @@ import { GraphQLError } from 'graphql'
     NotificationModule,
     SubjectMapGradeModule,
     TutorRequestModule,
+    CalendarModule,
+    StripeModule,
   ],
   providers: [
     {

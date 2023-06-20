@@ -1,3 +1,4 @@
+import { LessonTime } from 'src/database/entities/sub-object/lesson-time'
 import { ScheduleTime } from 'src/database/entities/sub-object/schedule-time'
 
 export type Schedule = {
@@ -50,4 +51,26 @@ export function isScheduleOverlapped(firstSchedule: Schedule, secondSchedule: Sc
   }
 
   return false
+}
+
+export function convertScheduleListToMap(schedule: ScheduleTime[]) {
+  return new Map(
+    schedule.map((item) => [
+      item.dayOfWeek,
+      {
+        startTime: item.startTime,
+        endTime: item.endTime,
+      },
+    ])
+  )
+}
+
+export function convertLessonTimeToString(lessonTime: LessonTime) {
+  return `${lessonTime.hour.toLocaleString('en-US', {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+  })}:${lessonTime.minute.toLocaleString('en-US', {
+    minimumIntegerDigits: 2,
+    useGrouping: false,
+  })}`
 }

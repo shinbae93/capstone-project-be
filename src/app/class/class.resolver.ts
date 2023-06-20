@@ -8,6 +8,7 @@ import { ClassLoader } from './class.loader'
 import { ClassService } from './class.service'
 import { CreateClassInput } from './dto/create-class.input'
 import { UpdateClassInput } from './dto/update-class.input'
+import { ClassQueryParams } from './dto/class-query-params.input'
 
 @Resolver(() => Class)
 export class ClassResolver {
@@ -23,8 +24,8 @@ export class ClassResolver {
   }
 
   @Query(() => [Class], { name: 'classes' })
-  findAll(@Args('courseId', { type: () => ID, nullable: true }) courseId: string) {
-    return this.classService.findAll(courseId)
+  findAll(@Args('queryParams') queryParams: ClassQueryParams) {
+    return this.classService.findAll(queryParams)
   }
 
   @Query(() => Class, { name: 'class' })

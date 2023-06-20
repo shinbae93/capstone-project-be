@@ -8,6 +8,7 @@ import { AuthResolver } from './auth.resolver'
 import { AuthService } from './auth.service'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { UserModule } from '../user/user.module'
+import { StripeModule } from '../stripe/stripe.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserModule } from '../user/user.module'
     }),
     PassportModule,
     UserModule,
+    StripeModule,
   ],
   providers: [AuthResolver, AuthService, JwtStrategy],
 })

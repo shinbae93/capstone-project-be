@@ -8,6 +8,7 @@ import { isTwoScheduleTimeArrayOverllaped } from 'src/utils/schedule'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { CreateClassInput } from './dto/create-class.input'
 import { UpdateClassInput } from './dto/update-class.input'
+import { ClassQueryParams } from './dto/class-query-params.input'
 
 @Injectable()
 export class ClassService {
@@ -27,6 +28,7 @@ export class ClassService {
       })
       .innerJoinAndSelect('Course.classes', 'Class', 'Course.id = Class.courseId')
       .getMany()
+    console.log('🚀 ~ file: class.service.ts:31 ~ ClassService ~ validateClassSchedule ~ courses:', courses)
 
     for (const course of courses) {
       for (const record of course.classes) {
@@ -62,10 +64,12 @@ export class ClassService {
     return await this.classRepository.save(record)
   }
 
-  findAll(courseId: string) {
+  findAll(queryParams: ClassQueryParams) {
     const builder = this.classRepository.createQueryBuilder()
 
-    if (courseId) {
+    if (queryParams.filters) {
+      const { courseId } = queryParams.filters
+
       builder.andWhere({ courseId })
     }
 

@@ -10,6 +10,7 @@ import { LoginOutput } from './dto/login.output'
 import { RegisterInput } from './dto/register.input'
 import { JwtPayload } from './interfaces/jwt-payload.interface'
 import { ConfigService } from '@nestjs/config'
+import { StripeService } from '../stripe/stripe.service'
 
 const SALT_ROUND = 10
 
@@ -18,7 +19,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private stripeService: StripeService
   ) {}
 
   async hashPassword(password: string) {
@@ -29,9 +31,12 @@ export class AuthService {
     return await bcrypt.compare(password, hashedPassword)
   }
 
-  async login(email: string, password: string): Promise<LoginOutput> {
+  async login(email: string, password: string, isAdmin = false): Promise<LoginOutput> {
     const user = await this.userRepository.findOneBy({ email })
     if (!user) {
+      throw new UnauthorizedException(ERROR_MESSAGE.INCORRECT_USERNAME_OR_PASSWORD)
+    }
+    if (isAdmin && user.roleId !== RoleId.ADMIN) {
       throw new UnauthorizedException(ERROR_MESSAGE.INCORRECT_USERNAME_OR_PASSWORD)
     }
 
@@ -69,10 +74,16 @@ export class AuthService {
       throw new BadRequestException(ERROR_MESSAGE.EMAIL_ALREADY_EXISTED)
     }
 
-    input.password = await this.hashPassword(input.password)
+    const password = await this.hashPassword(input.password)
 
-    const newUser = this.userRepository.create(input)
-    newUser.roleId = RoleId.STUDENT
+    const stripeCustomer = await this.stripeService.createCustomer(input.fullName, input.email)
+
+    const newUser = this.userRepository.create({
+      ...input,
+      password,
+      roleId: RoleId.STUDENT,
+      stripeCustomerId: stripeCustomer.id,
+    })
 
     return await this.userRepository.save(newUser)
   }
@@ -82,16 +93,17 @@ export class AuthService {
     return true
   }
 
-  async refreshToken(token: string, userId: string): Promise<string> {
-    const user = await this.userRepository.findOneBy({ id: userId })
+  async refreshToken(token: string): Promise<string> {
+    const user = await this.userRepository.findOneBy({ refreshToken: token })
+    if (!user) {
+      throw new UnauthorizedException()
+    }
 
     this.jwtService.verify(user.refreshToken, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     })
 
     if (token !== user.refreshToken) {
-      console.log('🚀 ~ file: auth.service.ts:93 ~ AuthService ~ refreshToken ~ user.refreshToken:', user.refreshToken)
-      console.log('🚀 ~ file: auth.service.ts:93 ~ AuthService ~ refreshToken ~ token:', token)
       throw new UnauthorizedException()
     }
 

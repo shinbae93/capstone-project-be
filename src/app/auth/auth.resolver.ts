@@ -17,6 +17,12 @@ export class AuthResolver {
     return await this.authService.login(input.email, input.password)
   }
 
+  @Public()
+  @Mutation(() => LoginOutput, { name: 'loginAdmin' })
+  async loginAdmin(@Args('input') input: LoginInput): Promise<LoginOutput> {
+    return await this.authService.login(input.email, input.password, true)
+  }
+
   @Mutation(() => Boolean, { name: 'logout' })
   async logout(@CurrentUser() curUser: User): Promise<boolean> {
     return await this.authService.logout(curUser)
@@ -30,7 +36,7 @@ export class AuthResolver {
 
   @Public()
   @Mutation(() => String, { name: 'refreshToken' })
-  async refreshToken(@Args('token') token: string, @CurrentUser() curUser: User): Promise<string> {
-    return await this.authService.refreshToken(token, curUser.id)
+  async refreshToken(@Args('token') token: string): Promise<string> {
+    return await this.authService.refreshToken(token)
   }
 }

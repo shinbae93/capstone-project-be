@@ -22,4 +22,5 @@ export const ERROR_MESSAGE = {
   ENROLMENT_NOT_FOUND: 'Enrolment not found.',
   NAME_OF_CLASS_IS_ALREADY_EXISTED: "Class's name is already existed.",
   COURSE_IS_ALREADY_PUBLISHED: 'Course is already published.',
+  COURSE_DOESNT_HAS_ANY_CLASSES: `Course doesn't has any classes.`,
 }

@@ -4,10 +4,12 @@ import { GraphQLResolveInfo } from 'graphql'
 import { paginate } from 'nestjs-typeorm-paginate'
 import { ERROR_MESSAGE } from 'src/common/error-message'
 import { Class } from 'src/database/entities/class.entity'
+import { Course } from 'src/database/entities/course.entity'
 import { Enrolment } from 'src/database/entities/enrolment.entity'
 import { hasSelectedField } from 'src/utils/graphql'
 import { applySorting } from 'src/utils/query-builder'
 import { FindOptionsWhere, Repository } from 'typeorm'
+import { CalendarService } from '../calendar/calendar.service'
 import { CreateEnrolmentInput } from './dto/create-enrolment.input'
 import { EnrolmentQueryParams } from './dto/enrolment-query-params.input'
 
@@ -15,7 +17,9 @@ import { EnrolmentQueryParams } from './dto/enrolment-query-params.input'
 export class EnrolmentService {
   constructor(
     @InjectRepository(Enrolment) private enrolmentRepository: Repository<Enrolment>,
-    @InjectRepository(Class) private classRepository: Repository<Class>
+    @InjectRepository(Class) private classRepository: Repository<Class>,
+    @InjectRepository(Course) private courseRepository: Repository<Course>,
+    private readonly calendarService: CalendarService
   ) {}
 
   getCountByClass(classId: string) {
@@ -23,12 +27,19 @@ export class EnrolmentService {
   }
 
   async create(input: CreateEnrolmentInput, userId: string) {
-    const data = await this.classRepository.findOneBy({ id: input.classId })
-    if (!data) {
+    const classEntity = await this.classRepository.findOneBy({ id: input.classId })
+    if (!classEntity) {
       throw new BadRequestException(ERROR_MESSAGE.CLASS_NOT_FOUND)
     }
 
-    const enrolment = this.enrolmentRepository.create({ ...input, courseId: data.courseId, userId })
+    const course = await this.courseRepository.findOneBy({ id: classEntity.courseId })
+    if (!course) {
+      throw new BadRequestException(ERROR_MESSAGE.COURSE_NOT_FOUND)
+    }
+
+    const enrolment = this.enrolmentRepository.create({ ...input, courseId: classEntity.courseId, userId })
+
+    await this.calendarService.createManyByClass(course, classEntity, userId)
 
     return this.enrolmentRepository.save(enrolment)
   }

@@ -57,6 +57,9 @@ export class User {
   @ManyToOne(() => Role)
   role: Role
 
+  @Column({ nullable: true })
+  stripeCustomerId: string
+
   @Field()
   @OneToOne(() => TutorDetail)
   tutorDetail: TutorDetail

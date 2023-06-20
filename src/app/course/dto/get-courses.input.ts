@@ -24,6 +24,9 @@ export class CourseFilterParams {
   userId: string
 
   @Field({ nullable: true })
+  isPublished: boolean
+
+  @Field({ nullable: true })
   q: string
 }
 
