@@ -1,6 +1,6 @@
 import { Args, ID, Query, Resolver } from '@nestjs/graphql'
-import { CalendarService } from './calendar.service'
 import { Calendar } from 'src/database/entities/calendar.entity'
+import { CalendarService } from './calendar.service'
 import { CalendarQueryParams } from './dto/get-calendar.input'
 
 @Resolver(() => Calendar)

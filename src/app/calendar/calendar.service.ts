@@ -13,21 +13,21 @@ export class CalendarService {
   constructor(@InjectRepository(Calendar) private calendarRepository: Repository<Calendar>) {}
 
   findAll(queryParams: CalendarQueryParams) {
-    const builder = this.calendarRepository.createQueryBuilder()
+    const queryBuilder = this.calendarRepository.createQueryBuilder()
     if (queryParams) {
       const { startTime, endTime, courseId } = queryParams
       if (startTime) {
-        builder.where(`"Calendar"."date" >= :startTime`, { startTime })
+        queryBuilder.where(`"Calendar"."date" >= :startTime`, { startTime })
       }
       if (endTime) {
-        builder.andWhere(`"Calendar"."date" <= :endTime`, { endTime })
+        queryBuilder.andWhere(`"Calendar"."date" <= :endTime`, { endTime })
       }
       if (courseId) {
-        builder.andWhere({ courseId })
+        queryBuilder.andWhere({ courseId })
       }
     }
 
-    return builder.getMany()
+    return queryBuilder.getMany()
   }
 
   findOne(id: string) {
