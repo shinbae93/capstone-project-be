@@ -7,10 +7,11 @@ import { CalendarModule } from '../calendar/calendar.module'
 import { UserModule } from '../user/user.module'
 import { EnrolmentResolver } from './enrolment.resolver'
 import { EnrolmentService } from './enrolment.service'
+import { EnrolmentLoader } from './enrolment.loader'
 
 @Module({
   imports: [TypeOrmModule.forFeature([Enrolment, Class, Course]), CalendarModule, UserModule],
-  providers: [EnrolmentResolver, EnrolmentService],
+  providers: [EnrolmentResolver, EnrolmentService, EnrolmentLoader],
   exports: [EnrolmentService],
 })
 export class EnrolmentModule {}

@@ -47,18 +47,22 @@ export class EnrolmentService {
   }
 
   findAll(queryParams: EnrolmentQueryParams, info: GraphQLResolveInfo) {
-    const { sorting, pagination } = queryParams
+    const { sorting, pagination, filters } = queryParams
 
     const queryBuilder = this.enrolmentRepository.createQueryBuilder()
 
     if (hasSelectedField(info, ['items', 'course'])) {
       queryBuilder.innerJoinAndSelect('Enrolment.course', 'Course', 'Enrolment.courseId = Course.id')
 
-      if (queryParams.filters?.statuses) {
-        const { statuses } = queryParams.filters
+      if (filters?.statuses) {
+        const { statuses } = filters
 
         queryBuilder.andWhere(`"Course"."status" = ANY(ARRAY[:...statuses])`, { statuses })
       }
+    }
+
+    if (filters?.courseId) {
+      queryBuilder.andWhere(`"Enrolment"."courseId" = :courseId`, { courseId: filters.courseId })
     }
 
     if (sorting) {
@@ -76,6 +80,11 @@ export class EnrolmentService {
     }
 
     return enrolment
+  }
+
+  async isEnrolled(courseId: string, userId: string) {
+    const res = await this.enrolmentRepository.findOneBy({ courseId, userId })
+    return !!res
   }
 
   async remove(id: string) {

@@ -10,7 +10,12 @@ export type Schedule = {
 export function isScheduleTimeOverlapped(firstDate: ScheduleTime, secondDate: ScheduleTime) {
   return (
     firstDate.dayOfWeek === secondDate.dayOfWeek &&
-    (!(firstDate.endTime < secondDate.startTime) || !(firstDate.startTime > secondDate.endTime))
+    !(
+      firstDate.endTime.hour + firstDate.endTime.minute / 60 <
+        secondDate.startTime.hour + secondDate.startTime.minute / 60 ||
+      firstDate.startTime.hour + firstDate.startTime.minute / 60 >
+        secondDate.endTime.hour + secondDate.endTime.minute / 60
+    )
   )
 }
 
@@ -32,7 +37,14 @@ export function isScheduleTimeArrayOverllaped(schedule: ScheduleTime[]) {
 
 export function isTwoScheduleTimeArrayOverllaped(firstSchedule: ScheduleTime[], secondSchedule: ScheduleTime[]) {
   for (const schedule of firstSchedule) {
-    const isOverlapped = secondSchedule.filter((item) => isScheduleTimeOverlapped(item, schedule))
+    const isOverlapped = secondSchedule.filter((item) => {
+      const res = isScheduleTimeOverlapped(item, schedule)
+      if (res) {
+        console.log('🚀 ~ file: schedule.ts:35 ~ isTwoScheduleTimeArrayOverllaped ~ schedule:', schedule)
+        console.log('🚀 ~ file: schedule.ts:38 ~ isOverlapped ~ item:', item)
+      }
+      return res
+    })
 
     if (isOverlapped.length) {
       return true

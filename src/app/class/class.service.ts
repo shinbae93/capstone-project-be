@@ -28,11 +28,15 @@ export class ClassService {
       })
       .innerJoinAndSelect('Course.classes', 'Class', 'Course.id = Class.courseId')
       .getMany()
-    console.log('🚀 ~ file: class.service.ts:31 ~ ClassService ~ validateClassSchedule ~ courses:', courses)
 
     for (const course of courses) {
       for (const record of course.classes) {
         if (isTwoScheduleTimeArrayOverllaped(schedule, record.schedule)) {
+          console.log('🚀 ~ file: class.service.ts:33 ~ ClassService ~ validateClassSchedule ~ course:', course)
+          console.log(
+            '🚀 ~ file: class.service.ts:35 ~ ClassService ~ validateClassSchedule ~ record:',
+            JSON.stringify(record, null, 4)
+          )
           throw new BadRequestException(ERROR_MESSAGE.INVALID_SCHEDULE)
         }
       }
