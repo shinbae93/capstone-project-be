@@ -1,9 +1,9 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { ClassMethod } from 'src/common/enums'
-import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import { Course } from './course.entity'
-import { Class } from './class.entity'
 import { GraphQLDate } from 'graphql-scalars'
+import { ClassMethod, CourseStatus } from 'src/common/enums'
+import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Class } from './class.entity'
+import { Course } from './course.entity'
 import { User } from './user.entity'
 
 @ObjectType()
@@ -21,7 +21,11 @@ export class Calendar {
   @Column()
   className: string
 
-  @Field()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  tutorName: string
+
+  @Field(() => CourseStatus)
   @Column()
   status: string
 
@@ -42,17 +46,21 @@ export class Calendar {
   endTime: string
 
   @Field()
-  @Column({ default: false })
-  isTeaching: boolean
-
-  @Field()
   @Index()
   @Column()
   userId: string
 
   @Field(() => User)
-  @ManyToOne(() => User, { cascade: ['remove'] })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   user: User
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  tutorId: string
+
+  @Field(() => User, { nullable: true })
+  @ManyToOne(() => User, { onDelete: 'CASCADE', nullable: true })
+  tutor: User
 
   @Field()
   @Index()
@@ -60,7 +68,7 @@ export class Calendar {
   courseId: string
 
   @Field(() => Course)
-  @ManyToOne(() => Course, { cascade: ['remove'] })
+  @ManyToOne(() => Course, { onDelete: 'CASCADE' })
   course: Course
 
   @Field()
@@ -69,7 +77,7 @@ export class Calendar {
   classId: string
 
   @Field(() => Class)
-  @ManyToOne(() => Class, { cascade: ['remove'] })
+  @ManyToOne(() => Class, { onDelete: 'CASCADE' })
   class: Class
 
   @Field()

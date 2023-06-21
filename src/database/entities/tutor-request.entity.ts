@@ -23,7 +23,7 @@ export class TutorRequest {
   userId: string
 
   @Field(() => User)
-  @ManyToOne(() => User, { cascade: ['remove'] })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   user: User
 
   @Field()

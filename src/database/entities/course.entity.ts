@@ -73,21 +73,21 @@ export class Course {
   @Column()
   userId: string
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   user: User
 
   @Field()
   @Column()
   gradeId: string
 
-  @ManyToOne(() => Grade, { cascade: ['remove'] })
+  @ManyToOne(() => Grade, { onDelete: 'CASCADE' })
   grade: Grade
 
   @Field()
   @Column()
   subjectId: string
 
-  @ManyToOne(() => Subject, { cascade: ['remove'] })
+  @ManyToOne(() => Subject, { onDelete: 'CASCADE' })
   subject: Subject
 
   @OneToMany(() => Class, (entity) => entity.course)

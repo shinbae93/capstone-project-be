@@ -35,7 +35,7 @@ export class Class {
   courseId: string
 
   @Field(() => Course)
-  @ManyToOne(() => Course, { cascade: ['remove'] })
+  @ManyToOne(() => Course, { onDelete: 'CASCADE' })
   course: Course
 
   @Field()

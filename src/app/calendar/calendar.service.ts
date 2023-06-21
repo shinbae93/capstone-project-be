@@ -7,6 +7,7 @@ import { Course } from 'src/database/entities/course.entity'
 import { convertLessonTimeToString, convertScheduleListToMap } from 'src/utils/schedule'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { CalendarQueryParams } from './dto/get-calendar.input'
+import { User } from 'src/database/entities/user.entity'
 
 @Injectable()
 export class CalendarService {
@@ -34,7 +35,7 @@ export class CalendarService {
     return this.calendarRepository.findOneBy({ id })
   }
 
-  async createManyByClass(course: Course, classEntity: Class, userId: string, isTeaching = false) {
+  async createManyByClass(course: Course, classEntity: Class, userId: string, tutor?: User) {
     const { startDate, endDate } = course
     const { schedule } = classEntity
     const scheduleMap = convertScheduleListToMap(schedule)
@@ -45,21 +46,25 @@ export class CalendarService {
     while (date.isSameOrBefore(end, 'day')) {
       const day = scheduleMap.get(date.day())
       if (day) {
-        listCalendar.push(
-          this.calendarRepository.create({
-            courseName: course.name,
-            className: classEntity.name,
-            method: classEntity.method,
-            status: course.status,
-            date: date.toDate(),
-            startTime: convertLessonTimeToString(day.startTime),
-            endTime: convertLessonTimeToString(day.endTime),
-            isTeaching,
-            courseId: course.id,
-            classId: classEntity.id,
-            userId,
-          })
-        )
+        const calendar = this.calendarRepository.create({
+          courseName: course.name,
+          className: classEntity.name,
+          method: classEntity.method,
+          status: course.status,
+          date: date.toDate(),
+          startTime: convertLessonTimeToString(day.startTime),
+          endTime: convertLessonTimeToString(day.endTime),
+          courseId: course.id,
+          classId: classEntity.id,
+          userId,
+        })
+
+        if (tutor) {
+          calendar.tutorName = tutor.fullName
+          calendar.tutorId = tutor.id
+        }
+
+        listCalendar.push(calendar)
       }
       date.add(1, 'day')
     }

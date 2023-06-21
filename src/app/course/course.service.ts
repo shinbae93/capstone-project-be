@@ -7,11 +7,11 @@ import { User } from 'src/database/entities/user.entity'
 import { getCourseStatus } from 'src/utils/course'
 import { applySorting } from 'src/utils/query-builder'
 import { FindOptionsWhere, Repository } from 'typeorm'
-import { CourseQueryParams } from './dto/get-courses.input'
-import { CreateCourseInput } from './dto/create-course.input'
-import { UpdateCourseInput } from './dto/update-course.input'
 import { CalendarService } from '../calendar/calendar.service'
 import { ClassService } from '../class/class.service'
+import { CreateCourseInput } from './dto/create-course.input'
+import { CourseQueryParams } from './dto/get-courses.input'
+import { UpdateCourseInput } from './dto/update-course.input'
 
 @Injectable()
 export class CourseService {
@@ -110,9 +110,7 @@ export class CourseService {
     this.courseRepository.merge(course, { isPublished: true })
 
     const listPromises = []
-    classes.forEach((item) =>
-      listPromises.push(this.calendarService.createManyByClass(course, item, course.userId, true))
-    )
+    classes.forEach((item) => listPromises.push(this.calendarService.createManyByClass(course, item, course.userId)))
     await Promise.all(listPromises)
 
     return this.courseRepository.save(course)

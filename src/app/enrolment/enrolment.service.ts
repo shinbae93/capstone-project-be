@@ -10,6 +10,7 @@ import { hasSelectedField } from 'src/utils/graphql'
 import { applySorting } from 'src/utils/query-builder'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { CalendarService } from '../calendar/calendar.service'
+import { UserService } from '../user/user.service'
 import { CreateEnrolmentInput } from './dto/create-enrolment.input'
 import { EnrolmentQueryParams } from './dto/enrolment-query-params.input'
 
@@ -19,7 +20,8 @@ export class EnrolmentService {
     @InjectRepository(Enrolment) private enrolmentRepository: Repository<Enrolment>,
     @InjectRepository(Class) private classRepository: Repository<Class>,
     @InjectRepository(Course) private courseRepository: Repository<Course>,
-    private readonly calendarService: CalendarService
+    private readonly calendarService: CalendarService,
+    private readonly userService: UserService
   ) {}
 
   getCountByClass(classId: string) {
@@ -38,8 +40,8 @@ export class EnrolmentService {
     }
 
     const enrolment = this.enrolmentRepository.create({ ...input, courseId: classEntity.courseId, userId })
-
-    await this.calendarService.createManyByClass(course, classEntity, userId)
+    const tutor = await this.userService.findOne({ id: course.userId })
+    await this.calendarService.createManyByClass(course, classEntity, userId, tutor)
 
     return this.enrolmentRepository.save(enrolment)
   }

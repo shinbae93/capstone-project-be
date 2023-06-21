@@ -26,7 +26,7 @@ export class TutorDetail {
   @Index()
   userId: string
 
-  @OneToOne(() => User, { cascade: ['remove'] })
+  @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User
 }

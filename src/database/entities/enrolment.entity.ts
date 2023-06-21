@@ -20,7 +20,7 @@ export class Enrolment {
   userId: string
 
   @Field(() => User)
-  @ManyToOne(() => User, { cascade: ['remove'] })
+  @ManyToOne(() => User, { onDelete: 'CASCADE' })
   user: User
 
   @Field(() => ID)
@@ -28,7 +28,7 @@ export class Enrolment {
   courseId: string
 
   @Field(() => Course)
-  @ManyToOne(() => Course, { cascade: ['remove'] })
+  @ManyToOne(() => Course, { onDelete: 'CASCADE' })
   course: Course
 
   @Field(() => ID)
@@ -36,6 +36,6 @@ export class Enrolment {
   classId: string
 
   @Field(() => Class)
-  @ManyToOne(() => Class, { cascade: ['remove'] })
+  @ManyToOne(() => Class, { onDelete: 'CASCADE' })
   class: Class
 }
