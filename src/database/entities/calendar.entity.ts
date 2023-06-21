@@ -21,6 +21,10 @@ export class Calendar {
   @Column()
   className: string
 
+  @Field()
+  @Column()
+  status: string
+
   @Field(() => ClassMethod)
   @Column()
   method: string
@@ -47,7 +51,7 @@ export class Calendar {
   userId: string
 
   @Field(() => User)
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { cascade: ['remove'] })
   user: User
 
   @Field()
@@ -56,7 +60,7 @@ export class Calendar {
   courseId: string
 
   @Field(() => Course)
-  @ManyToOne(() => Course)
+  @ManyToOne(() => Course, { cascade: ['remove'] })
   course: Course
 
   @Field()
@@ -65,7 +69,7 @@ export class Calendar {
   classId: string
 
   @Field(() => Class)
-  @ManyToOne(() => Class)
+  @ManyToOne(() => Class, { cascade: ['remove'] })
   class: Class
 
   @Field()

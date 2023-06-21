@@ -80,14 +80,14 @@ export class Course {
   @Column()
   gradeId: string
 
-  @ManyToOne(() => Grade)
+  @ManyToOne(() => Grade, { cascade: ['remove'] })
   grade: Grade
 
   @Field()
   @Column()
   subjectId: string
 
-  @ManyToOne(() => Subject)
+  @ManyToOne(() => Subject, { cascade: ['remove'] })
   subject: Subject
 
   @OneToMany(() => Class, (entity) => entity.course)

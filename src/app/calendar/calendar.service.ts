@@ -50,6 +50,7 @@ export class CalendarService {
             courseName: course.name,
             className: classEntity.name,
             method: classEntity.method,
+            status: course.status,
             date: date.toDate(),
             startTime: convertLessonTimeToString(day.startTime),
             endTime: convertLessonTimeToString(day.endTime),
