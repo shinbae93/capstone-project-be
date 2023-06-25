@@ -27,6 +27,8 @@ import { TutorReportModule } from './tutor-report/tutor-report.module'
 import { TutorRequestModule } from './tutor-request/tutor-request.module'
 import { TutorReviewModule } from './tutor-review/tutor-review.module'
 import { UserModule } from './user/user.module'
+import { QuizModule } from './quiz/quiz.module'
+import { AssignmentModule } from './assignment/assignment.module'
 
 @Module({
   imports: [
@@ -82,6 +84,8 @@ import { UserModule } from './user/user.module'
     TutorRequestModule,
     CalendarModule,
     StripeModule,
+    QuizModule,
+    AssignmentModule,
   ],
   providers: [
     {

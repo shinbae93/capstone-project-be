@@ -4,16 +4,16 @@ import * as moment from 'moment'
 import { Calendar } from 'src/database/entities/calendar.entity'
 import { Class } from 'src/database/entities/class.entity'
 import { Course } from 'src/database/entities/course.entity'
-import { convertLessonTimeToString, convertScheduleListToMap } from 'src/utils/schedule'
-import { FindOptionsWhere, Repository } from 'typeorm'
-import { CalendarQueryParams } from './dto/get-calendar.input'
 import { User } from 'src/database/entities/user.entity'
+import { convertScheduleListToMap } from 'src/utils/schedule'
+import { FindOptionsWhere, Repository } from 'typeorm'
+import { CalendarQueryParams } from './dto/calendar-query-params.input'
 
 @Injectable()
 export class CalendarService {
   constructor(@InjectRepository(Calendar) private calendarRepository: Repository<Calendar>) {}
 
-  findAll(queryParams: CalendarQueryParams) {
+  findAll(queryParams: CalendarQueryParams, currentUser?: User) {
     const queryBuilder = this.calendarRepository.createQueryBuilder()
     if (queryParams) {
       const { startTime, endTime, courseId } = queryParams
@@ -26,6 +26,10 @@ export class CalendarService {
       if (courseId) {
         queryBuilder.andWhere({ courseId })
       }
+    }
+
+    if (currentUser) {
+      queryBuilder.andWhere(`"Calendar"."userId" = :userId`, { userId: currentUser.id })
     }
 
     return queryBuilder.getMany()
@@ -52,8 +56,8 @@ export class CalendarService {
           method: classEntity.method,
           status: course.status,
           date: date.toDate(),
-          startTime: convertLessonTimeToString(day.startTime),
-          endTime: convertLessonTimeToString(day.endTime),
+          startTime: day.startTime,
+          endTime: day.endTime,
           courseId: course.id,
           classId: classEntity.id,
           userId,

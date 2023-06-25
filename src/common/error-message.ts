@@ -23,4 +23,9 @@ export const ERROR_MESSAGE = {
   NAME_OF_CLASS_IS_ALREADY_EXISTED: "Class's name is already existed.",
   COURSE_IS_ALREADY_PUBLISHED: 'Course is already published.',
   COURSE_DOESNT_HAS_ANY_CLASSES: `Course doesn't has any classes.`,
+  THIS_COURSE_IS_NOT_PUBLISHED: 'This course is not published.',
+  ASSIGNMENT_NOT_FOUND: 'Assignment not found.',
+  QUIZ_NOT_FOUND: 'Quiz not found.',
+  NOT_IN_ANSWER_TIME_OF_THIS_QUIZ: 'Not in answer time of this quiz.',
+  YOU_ALREADY_ENROLLED: 'You already enrolled this course.',
 }

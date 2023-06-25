@@ -13,6 +13,7 @@ import { CalendarService } from '../calendar/calendar.service'
 import { UserService } from '../user/user.service'
 import { CreateEnrolmentInput } from './dto/create-enrolment.input'
 import { EnrolmentQueryParams } from './dto/enrolment-query-params.input'
+import { User } from 'src/database/entities/user.entity'
 
 @Injectable()
 export class EnrolmentService {
@@ -39,6 +40,11 @@ export class EnrolmentService {
       throw new BadRequestException(ERROR_MESSAGE.COURSE_NOT_FOUND)
     }
 
+    const existedEnrolment = await this.enrolmentRepository.findOneBy({ courseId: classEntity.courseId })
+    if (existedEnrolment) {
+      throw new BadRequestException(ERROR_MESSAGE.YOU_ALREADY_ENROLLED)
+    }
+
     const enrolment = this.enrolmentRepository.create({ ...input, courseId: classEntity.courseId, userId })
     const tutor = await this.userService.findOne({ id: course.userId })
     await this.calendarService.createManyByClass(course, classEntity, userId, tutor)
@@ -46,7 +52,7 @@ export class EnrolmentService {
     return this.enrolmentRepository.save(enrolment)
   }
 
-  findAll(queryParams: EnrolmentQueryParams, info: GraphQLResolveInfo) {
+  findAll(queryParams: EnrolmentQueryParams, info: GraphQLResolveInfo, currentUser?: User) {
     const { sorting, pagination, filters } = queryParams
 
     const queryBuilder = this.enrolmentRepository.createQueryBuilder()
@@ -65,6 +71,9 @@ export class EnrolmentService {
       queryBuilder.andWhere(`"Enrolment"."courseId" = :courseId`, { courseId: filters.courseId })
     }
 
+    if (currentUser) {
+      queryBuilder.andWhere(`"Enrolment"."userId" = :userId`, { userId: currentUser.id })
+    }
     if (sorting) {
       applySorting(queryBuilder, sorting)
     }

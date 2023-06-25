@@ -7,6 +7,9 @@ export class EnrolmentFilterParams {
   @Field(() => ID, { nullable: true })
   courseId: string
 
+  @Field(() => ID, { nullable: true })
+  classId: string
+
   @Field(() => [CourseStatus], { nullable: true })
   statuses: string[]
 

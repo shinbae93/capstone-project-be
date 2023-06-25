@@ -1,6 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql'
-import { IsIn, ValidateNested } from 'class-validator'
-import { LessonTime } from './lesson-time'
+import { IsIn } from 'class-validator'
 
 @InputType('ScheduleTimeInput')
 @ObjectType()
@@ -9,11 +8,9 @@ export class ScheduleTime {
   @Field({ description: 'Values from 0 to 6 equivalent to Sunday to Saturday' })
   dayOfWeek: number
 
-  @ValidateNested()
-  @Field(() => LessonTime)
-  startTime: LessonTime
+  @Field()
+  startTime: string
 
-  @ValidateNested()
-  @Field(() => LessonTime)
-  endTime: LessonTime
+  @Field()
+  endTime: string
 }

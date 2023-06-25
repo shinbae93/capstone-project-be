@@ -10,7 +10,7 @@ import { FindOptionsWhere, Repository } from 'typeorm'
 import { CalendarService } from '../calendar/calendar.service'
 import { ClassService } from '../class/class.service'
 import { CreateCourseInput } from './dto/create-course.input'
-import { CourseQueryParams } from './dto/get-courses.input'
+import { CourseQueryParams } from './dto/courses-query-params.input'
 import { UpdateCourseInput } from './dto/update-course.input'
 
 @Injectable()

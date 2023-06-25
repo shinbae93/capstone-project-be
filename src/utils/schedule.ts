@@ -1,4 +1,3 @@
-import { LessonTime } from 'src/database/entities/sub-object/lesson-time'
 import { ScheduleTime } from 'src/database/entities/sub-object/schedule-time'
 
 export type Schedule = {
@@ -7,15 +6,32 @@ export type Schedule = {
   schedule: ScheduleTime[]
 }
 
+/**
+ *
+ * @param time must be in format HH:mm
+ */
+export function splitTime(time: string) {
+  const splittedTime = time.split(':')
+  return {
+    hour: +splittedTime[0],
+    minute: +splittedTime[1],
+  }
+}
+
+export function timeToHours(time: string) {
+  const splittedTime = splitTime(time)
+  return splittedTime.hour + splittedTime.minute / 60
+}
+
 export function isScheduleTimeOverlapped(firstDate: ScheduleTime, secondDate: ScheduleTime) {
+  const firstStartHours = timeToHours(firstDate.startTime)
+  const firstEndHours = timeToHours(firstDate.endTime)
+  const secondStartHours = timeToHours(secondDate.startTime)
+  const secondEndHours = timeToHours(secondDate.endTime)
+
   return (
     firstDate.dayOfWeek === secondDate.dayOfWeek &&
-    !(
-      firstDate.endTime.hour + firstDate.endTime.minute / 60 <
-        secondDate.startTime.hour + secondDate.startTime.minute / 60 ||
-      firstDate.startTime.hour + firstDate.startTime.minute / 60 >
-        secondDate.endTime.hour + secondDate.endTime.minute / 60
-    )
+    !(firstEndHours < secondStartHours || firstStartHours > secondEndHours)
   )
 }
 
@@ -37,14 +53,7 @@ export function isScheduleTimeArrayOverllaped(schedule: ScheduleTime[]) {
 
 export function isTwoScheduleTimeArrayOverllaped(firstSchedule: ScheduleTime[], secondSchedule: ScheduleTime[]) {
   for (const schedule of firstSchedule) {
-    const isOverlapped = secondSchedule.filter((item) => {
-      const res = isScheduleTimeOverlapped(item, schedule)
-      if (res) {
-        console.log('🚀 ~ file: schedule.ts:35 ~ isTwoScheduleTimeArrayOverllaped ~ schedule:', schedule)
-        console.log('🚀 ~ file: schedule.ts:38 ~ isOverlapped ~ item:', item)
-      }
-      return res
-    })
+    const isOverlapped = secondSchedule.filter((item) => isScheduleTimeOverlapped(item, schedule))
 
     if (isOverlapped.length) {
       return true
@@ -75,14 +84,4 @@ export function convertScheduleListToMap(schedule: ScheduleTime[]) {
       },
     ])
   )
-}
-
-export function convertLessonTimeToString(lessonTime: LessonTime) {
-  return `${lessonTime.hour.toLocaleString('en-US', {
-    minimumIntegerDigits: 2,
-    useGrouping: false,
-  })}:${lessonTime.minute.toLocaleString('en-US', {
-    minimumIntegerDigits: 2,
-    useGrouping: false,
-  })}`
 }

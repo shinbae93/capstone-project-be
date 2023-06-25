@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql'
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { User } from './user.entity'
 import { Course } from './course.entity'
 import { Class } from './class.entity'
@@ -38,4 +38,8 @@ export class Enrolment {
   @Field(() => Class)
   @ManyToOne(() => Class, { onDelete: 'CASCADE' })
   class: Class
+
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date
 }

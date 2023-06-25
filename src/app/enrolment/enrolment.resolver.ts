@@ -8,6 +8,8 @@ import { EnrolmentsPagination } from './dto/enrolment-pagination.output-'
 import { EnrolmentQueryParams } from './dto/enrolment-query-params.input'
 import { GraphQLResolveInfo } from 'graphql'
 import { EnrolmentLoader } from './enrolment.loader'
+import { Course } from 'src/database/entities/course.entity'
+import { Class } from 'src/database/entities/class.entity'
 
 @Resolver(() => Enrolment)
 export class EnrolmentResolver {
@@ -24,6 +26,20 @@ export class EnrolmentResolver {
     @Info() info: GraphQLResolveInfo
   ) {
     return this.enrolmentService.findAll(queryParams, info)
+  }
+
+  @Query(() => EnrolmentsPagination, { name: 'myEnrolments' })
+  findMyEnrolments(
+    @Args('queryParams', { nullable: true }) queryParams: EnrolmentQueryParams,
+    @Info() info: GraphQLResolveInfo,
+    @CurrentUser() currentUser: User
+  ) {
+    return this.enrolmentService.findAll(queryParams, info, currentUser)
+  }
+
+  @Query(() => Enrolment, { name: 'myEnrolmentByCourse' })
+  findMyEnrolment(@Args('courseId', { type: () => ID }) courseId: string, @CurrentUser() currentUser: User) {
+    return this.enrolmentService.findOne({ courseId, userId: currentUser.id })
   }
 
   @Query(() => Enrolment, { name: 'enrolment' })
@@ -45,5 +61,17 @@ export class EnrolmentResolver {
   async getUser(@Parent() enrolment: Enrolment) {
     const { userId } = enrolment
     return this.enrolmentLoader.batchUsers.load(userId)
+  }
+
+  @ResolveField('course', () => Course)
+  async getCourse(@Parent() enrolment: Enrolment) {
+    const { courseId } = enrolment
+    return this.enrolmentLoader.batchCourses.load(courseId)
+  }
+
+  @ResolveField('class', () => Class)
+  async getClass(@Parent() enrolment: Enrolment) {
+    const { classId } = enrolment
+    return this.enrolmentLoader.batchClasses.load(classId)
   }
 }

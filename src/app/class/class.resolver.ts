@@ -28,7 +28,7 @@ export class ClassResolver {
     return this.classService.findAll(queryParams)
   }
 
-  @Query(() => Class, { name: 'class' })
+  @Query(() => Class, { name: 'getClass' })
   findOne(@Args('id', { type: () => ID }) id: string) {
     return this.classService.findOne({ id })
   }
