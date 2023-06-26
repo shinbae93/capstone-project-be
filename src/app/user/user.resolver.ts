@@ -7,6 +7,9 @@ import { Role } from 'src/database/entities/role.entity'
 import { TutorDetail } from 'src/database/entities/tutor-detail.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import { UserPagination } from './dto/user-pagination.output'
+import { UserQueryParams } from './dto/user-query-params.input'
+import { UpdateBlockStatusUserInput } from './dto/update-block-status-user.input'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -26,12 +29,17 @@ export class UserResolver {
     return this.userService.findOne({ id })
   }
 
-  @Query(() => [User], { name: 'getUsers' })
-  findAll() {
-    return this.userService.findAll()
+  @Query(() => UserPagination, { name: 'getUsers' })
+  findAll(@Args('queryParams') queryParams: UserQueryParams) {
+    return this.userService.findAll(queryParams)
   }
 
-  @Mutation(() => User, { name: 'deleteUser' })
+  @Mutation(() => Boolean, { name: 'updateBlockStatusUser' })
+  updateBlockStatusUser(@Args('input') input: UpdateBlockStatusUserInput) {
+    return this.userService.updateBlockStatus(input)
+  }
+
+  @Mutation(() => Boolean, { name: 'deleteUser' })
   deleteUser(@Args('id', { type: () => ID }) id: string) {
     return this.userService.delete(id)
   }
@@ -42,7 +50,7 @@ export class UserResolver {
     return this.userLoader.batchRoles.load(roleId)
   }
 
-  @ResolveField('tutorDetail', () => TutorDetail)
+  @ResolveField('tutorDetail', () => TutorDetail, { nullable: true })
   async getTutorDetail(@Parent() user: User) {
     const { id } = user
     return this.tutorDetailRepository.findOneBy({ userId: id })

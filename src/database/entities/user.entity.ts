@@ -11,6 +11,7 @@ import {
 import { TutorDetail } from './tutor-detail.entity'
 import { Role } from './role.entity'
 import { GraphQLDate } from 'graphql-scalars'
+import { Gender } from 'src/common/enums'
 
 @ObjectType()
 @Entity()
@@ -38,13 +39,17 @@ export class User {
   @Column({ unique: true })
   phoneNumber: string
 
-  @Field()
+  @Field(() => Gender)
   @Column()
   gender: number
 
   @Field(() => GraphQLDate)
   @Column({ type: 'date' })
   birthday: Date
+
+  @Field()
+  @Column({ default: false })
+  isBlocked: boolean
 
   @Column({ nullable: true })
   refreshToken: string
@@ -60,7 +65,7 @@ export class User {
   @Column({ nullable: true })
   stripeCustomerId: string
 
-  @Field()
+  @Field(() => TutorDetail)
   @OneToOne(() => TutorDetail)
   tutorDetail: TutorDetail
 
