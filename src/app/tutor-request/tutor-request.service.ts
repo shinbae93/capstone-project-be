@@ -7,15 +7,29 @@ import { User } from 'src/database/entities/user.entity'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { UserService } from '../user/user.service'
 import { CreateTutorRequestInput } from './dto/create-tutor-request.input'
+import { TutorRequestQueryParams } from './dto/tutor-request-query-params.input'
 import { UpdateTutorRequestStatusInput } from './dto/update-tutor-request-status.input'
 import { UpdateTutorRequestInput } from './dto/update-tutor-request.input'
+import { applySorting } from 'src/utils/query-builder'
+import { paginate } from 'nestjs-typeorm-paginate'
 
 @Injectable()
 export class TutorRequestService {
-  constructor(@InjectRepository(TutorRequest) private tutorRequestRepository: Repository<TutorRequest>, private userService: UserService) {}
+  constructor(
+    @InjectRepository(TutorRequest) private tutorRequestRepository: Repository<TutorRequest>,
+    private userService: UserService
+  ) {}
 
-  findAll() {
-    return this.tutorRequestRepository.find()
+  findAll(queryParams: TutorRequestQueryParams) {
+    const { sorting, pagination } = queryParams
+
+    const queryBuilder = this.tutorRequestRepository.createQueryBuilder()
+
+    if (sorting) {
+      applySorting(queryBuilder, sorting)
+    }
+
+    return paginate(queryBuilder, pagination)
   }
 
   async findOne(criteria: FindOptionsWhere<TutorRequest> | FindOptionsWhere<TutorRequest>[]): Promise<TutorRequest> {
