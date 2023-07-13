@@ -1,35 +1,42 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { TutorReportService } from './tutor-report.service';
-import { TutorReport } from '../../database/entities/tutor-report.entity';
-import { CreateTutorReportInput } from './dto/create-tutor-report.input';
-import { UpdateTutorReportInput } from './dto/update-tutor-report.input';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql'
+import { User } from 'src/database/entities/user.entity'
+import { CurrentUser } from 'src/decorators/current-user.decorator'
+import { TutorReport } from '../../database/entities/tutor-report.entity'
+import { CreateTutorReportInput } from './dto/create-tutor-report.input'
+import { TutorReportPagination } from './dto/tutor-report-pagination.output'
+import { TutorReportQueryParams } from './dto/tutor-report-query-params.input'
+import { TutorReportService } from './tutor-report.service'
+import { TutorReportLoader } from './tutor-report.loader'
 
 @Resolver(() => TutorReport)
 export class TutorReportResolver {
-  constructor(private readonly tutorReportService: TutorReportService) {}
+  constructor(
+    private readonly tutorReportService: TutorReportService,
+    private readonly tutorReportLoader: TutorReportLoader
+  ) {}
 
-  @Mutation(() => TutorReport)
-  createTutorReport(@Args('createTutorReportInput') createTutorReportInput: CreateTutorReportInput) {
-    return this.tutorReportService.create(createTutorReportInput);
+  @Mutation(() => TutorReport, { name: 'createTutorReport' })
+  createTutorReport(@Args('input') createTutorReportInput: CreateTutorReportInput, @CurrentUser() currentUser: User) {
+    return this.tutorReportService.create(createTutorReportInput, currentUser.id)
   }
 
-  @Query(() => [TutorReport], { name: 'tutorReport' })
-  findAll() {
-    return this.tutorReportService.findAll();
+  @Query(() => TutorReportPagination, { name: 'tutorReports' })
+  findAll(@Args('queryParams') queryParams: TutorReportQueryParams) {
+    return this.tutorReportService.findAll(queryParams)
   }
 
   @Query(() => TutorReport, { name: 'tutorReport' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.tutorReportService.findOne(id);
+  findOne(@Args('id', { type: () => ID }) id: string) {
+    return this.tutorReportService.findOne(id)
   }
 
-  @Mutation(() => TutorReport)
-  updateTutorReport(@Args('updateTutorReportInput') updateTutorReportInput: UpdateTutorReportInput) {
-    return this.tutorReportService.update(updateTutorReportInput.id, updateTutorReportInput);
+  @ResolveField('tutor', () => User)
+  async getTutor(@Parent() tutorReport: TutorReport) {
+    return this.tutorReportLoader.batchTutors.load(tutorReport.tutorId)
   }
 
-  @Mutation(() => TutorReport)
-  removeTutorReport(@Args('id', { type: () => Int }) id: number) {
-    return this.tutorReportService.remove(id);
+  @ResolveField('author', () => User)
+  async getAuthor(@Parent() tutorReport: TutorReport) {
+    return this.tutorReportLoader.batchAuthors.load(tutorReport.authorId)
   }
 }

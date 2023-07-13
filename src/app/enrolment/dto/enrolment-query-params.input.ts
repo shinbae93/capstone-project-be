@@ -1,6 +1,6 @@
 import { Field, ID, InputType } from '@nestjs/graphql'
 import { QueryParams } from 'src/base/types/query-params.type'
-import { CourseStatus } from 'src/common/enums'
+import { EnrolmentStatus } from 'src/common/enums'
 
 @InputType()
 export class EnrolmentFilterParams {
@@ -10,7 +10,7 @@ export class EnrolmentFilterParams {
   @Field(() => ID, { nullable: true })
   classId: string
 
-  @Field(() => [CourseStatus], { nullable: true })
+  @Field(() => [EnrolmentStatus], { nullable: true })
   statuses: string[]
 
   @Field({ nullable: true })

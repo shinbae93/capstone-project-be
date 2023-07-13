@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { APP_GUARD } from '@nestjs/core'
 import { GraphQLModule } from '@nestjs/graphql'
+import { ScheduleModule } from '@nestjs/schedule'
 import { GraphQLError } from 'graphql'
 import { GraphQLDate } from 'graphql-scalars'
 import * as Joi from 'joi'
@@ -12,13 +13,17 @@ import { UniqueStringConstraint } from 'src/decorators/unique-string.decorator'
 import { UniqueConstraint } from 'src/decorators/unique.decorator'
 import { JwtAuthGuard } from 'src/guards/auth.guard'
 import { RoleGuard } from 'src/guards/role.guard'
+import { AssignmentModule } from './assignment/assignment.module'
 import { AuthModule } from './auth/auth.module'
 import { CalendarModule } from './calendar/calendar.module'
 import { ClassModule } from './class/class.module'
 import { CourseModule } from './course/course.module'
+import { CronjobModule } from './cronjob/cronjob.module'
 import { EnrolmentModule } from './enrolment/enrolment.module'
 import { GradeModule } from './grade/grade.module'
+import { NotificationModule } from './notification/notification.module'
 import { PaymentModule } from './payment/payment.module'
+import { QuizModule } from './quiz/quiz.module'
 import { StripeModule } from './stripe/stripe.module'
 import { SubjectMapGradeModule } from './subject-map-grade/subject-map-grade.module'
 import { SubjectModule } from './subject/subject.module'
@@ -27,8 +32,6 @@ import { TutorReportModule } from './tutor-report/tutor-report.module'
 import { TutorRequestModule } from './tutor-request/tutor-request.module'
 import { TutorReviewModule } from './tutor-review/tutor-review.module'
 import { UserModule } from './user/user.module'
-import { QuizModule } from './quiz/quiz.module'
-import { AssignmentModule } from './assignment/assignment.module'
 
 @Module({
   imports: [
@@ -68,6 +71,7 @@ import { AssignmentModule } from './assignment/assignment.module'
         }
       },
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     DatabaseModule,
     UserModule,
@@ -86,6 +90,8 @@ import { AssignmentModule } from './assignment/assignment.module'
     StripeModule,
     QuizModule,
     AssignmentModule,
+    CronjobModule,
+    NotificationModule,
   ],
   providers: [
     {

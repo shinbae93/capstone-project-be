@@ -53,8 +53,6 @@ export class UserService {
       }
     }
 
-    queryBuilder.addOrderBy('id', 'ASC', 'NULLS LAST')
-
     if (sorting) {
       applySorting(queryBuilder, sorting)
     }

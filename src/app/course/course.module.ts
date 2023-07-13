@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Course } from 'src/database/entities/course.entity'
+import { Payment } from 'src/database/entities/payment.entity'
 import { CalendarModule } from '../calendar/calendar.module'
 import { ClassModule } from '../class/class.module'
 import { GradeModule } from '../grade/grade.module'
@@ -11,7 +12,14 @@ import { CourseResolver } from './course.resolver'
 import { CourseService } from './course.service'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Course]), GradeModule, SubjectModule, ClassModule, UserModule, CalendarModule],
+  imports: [
+    TypeOrmModule.forFeature([Course, Payment]),
+    GradeModule,
+    SubjectModule,
+    ClassModule,
+    UserModule,
+    CalendarModule,
+  ],
   providers: [CourseResolver, CourseService, CourseLoader],
 })
 export class CourseModule {}

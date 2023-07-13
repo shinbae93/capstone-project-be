@@ -5,9 +5,9 @@ import { Calendar } from 'src/database/entities/calendar.entity'
 import { Class } from 'src/database/entities/class.entity'
 import { Course } from 'src/database/entities/course.entity'
 import { User } from 'src/database/entities/user.entity'
-import { convertScheduleListToMap } from 'src/utils/schedule'
 import { FindOptionsWhere, Repository } from 'typeorm'
 import { CalendarQueryParams } from './dto/calendar-query-params.input'
+import { groupBy } from 'lodash'
 
 @Injectable()
 export class CalendarService {
@@ -40,36 +40,38 @@ export class CalendarService {
   }
 
   async createManyByClass(course: Course, classEntity: Class, userId: string, tutor?: User) {
-    const { startDate, endDate } = course
-    const { schedule } = classEntity
-    const scheduleMap = convertScheduleListToMap(schedule)
+    const { schedule, startDate, endDate } = classEntity
+    const scheduleMap = groupBy(schedule, 'dayOfWeek')
     const listCalendar = []
     const date = moment(startDate)
     const end = moment(endDate)
 
-    while (date.isSameOrBefore(end, 'day')) {
-      const day = scheduleMap.get(date.day())
-      if (day) {
-        const calendar = this.calendarRepository.create({
-          courseName: course.name,
-          className: classEntity.name,
-          method: classEntity.method,
-          status: course.status,
-          date: date.toDate(),
-          startTime: day.startTime,
-          endTime: day.endTime,
-          courseId: course.id,
-          classId: classEntity.id,
-          userId,
-        })
+    while (date.isSameOrBefore(end)) {
+      const scheduleList = scheduleMap[date.day()]
+      if (scheduleList?.length) {
+        for (const item of scheduleList) {
+          const calendar = this.calendarRepository.create({
+            courseName: course.name,
+            className: classEntity.name,
+            method: classEntity.method,
+            status: course.status,
+            date: date.toDate(),
+            startTime: item.startTime,
+            endTime: item.endTime,
+            courseId: course.id,
+            classId: classEntity.id,
+            userId,
+          })
 
-        if (tutor) {
-          calendar.tutorName = tutor.fullName
-          calendar.tutorId = tutor.id
+          if (tutor) {
+            calendar.tutorName = tutor.fullName
+            calendar.tutorId = tutor.id
+          }
+
+          listCalendar.push(calendar)
         }
-
-        listCalendar.push(calendar)
       }
+
       date.add(1, 'day')
     }
 

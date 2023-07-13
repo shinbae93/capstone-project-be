@@ -15,7 +15,7 @@ import { Class } from 'src/database/entities/class.entity'
 export class EnrolmentResolver {
   constructor(private readonly enrolmentService: EnrolmentService, private enrolmentLoader: EnrolmentLoader) {}
 
-  @Mutation(() => Enrolment)
+  @Mutation(() => Enrolment, { name: 'createEnrolment' })
   createEnrolment(@Args('input') input: CreateEnrolmentInput, @CurrentUser() currentUser: User) {
     return this.enrolmentService.create(input, currentUser.id)
   }
@@ -37,9 +37,9 @@ export class EnrolmentResolver {
     return this.enrolmentService.findAll(queryParams, info, currentUser)
   }
 
-  @Query(() => Enrolment, { name: 'myEnrolmentByCourse' })
+  @Query(() => Enrolment, { name: 'myEnrolmentByCourse', nullable: true })
   findMyEnrolment(@Args('courseId', { type: () => ID }) courseId: string, @CurrentUser() currentUser: User) {
-    return this.enrolmentService.findOne({ courseId, userId: currentUser.id })
+    return this.enrolmentService.getMyLatestEnrolment({ courseId, userId: currentUser.id })
   }
 
   @Query(() => Enrolment, { name: 'enrolment' })

@@ -3,6 +3,8 @@ import { Subject } from '../../database/entities/subject.entity'
 import { CreateSubjectInput } from './dto/create-subject.input'
 import { UpdateSubjectInput } from './dto/update-subject.input'
 import { SubjectService } from './subject.service'
+import { SubjectPagination } from './dto/subject-pagination.output'
+import { QueryParams } from 'src/base/types/query-params.type'
 
 @Resolver(() => Subject)
 export class SubjectResolver {
@@ -13,9 +15,9 @@ export class SubjectResolver {
     return this.subjectService.create(createSubjectInput)
   }
 
-  @Query(() => [Subject], { name: 'subjects' })
-  findAll() {
-    return this.subjectService.findAll()
+  @Query(() => SubjectPagination, { name: 'subjects' })
+  findAll(@Args('queryParams') queryParams: QueryParams) {
+    return this.subjectService.findAll(queryParams)
   }
 
   @Query(() => Subject, { name: 'subject' })

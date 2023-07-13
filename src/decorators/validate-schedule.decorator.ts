@@ -19,7 +19,7 @@ export class ValidateScheduleConstraint implements ValidatorConstraintInterface 
   }
 
   defaultMessage() {
-    return ERROR_MESSAGE.INVALID_SCHEDULE
+    return ERROR_MESSAGE.OVERLAPPED_SCHEDULE
   }
 }
 

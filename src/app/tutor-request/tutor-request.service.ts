@@ -25,6 +25,7 @@ export class TutorRequestService {
 
     const queryBuilder = this.tutorRequestRepository.createQueryBuilder()
 
+    queryBuilder.addOrderBy('"createdAt"', 'DESC', 'NULLS LAST')
     if (sorting) {
       applySorting(queryBuilder, sorting)
     }
@@ -70,18 +71,8 @@ export class TutorRequestService {
     const tutorRequest = await this.tutorRequestRepository.findOneBy({ id })
 
     const { status } = input
-    let availableStatues = []
 
-    switch (tutorRequest.status) {
-      case TutorRequestStatus.PENDING:
-        availableStatues = [TutorRequestStatus.PROCESSING, TutorRequestStatus.CANCELED]
-        break
-      case TutorRequestStatus.PROCESSING:
-        availableStatues = [TutorRequestStatus.ACCEPTED, TutorRequestStatus.REJECTED]
-        break
-    }
-
-    if (!availableStatues.includes(status)) {
+    if (tutorRequest.status !== TutorRequestStatus.PENDING) {
       throw new BadRequestException(ERROR_MESSAGE.INVALID_STATUS)
     }
 

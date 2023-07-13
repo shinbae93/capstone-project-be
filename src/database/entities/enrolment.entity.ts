@@ -1,8 +1,11 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql'
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { User } from './user.entity'
-import { Course } from './course.entity'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { EnrolmentStatus } from 'src/common/enums'
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { Class } from './class.entity'
+import { Course } from './course.entity'
+import { Payment } from './payment.entity'
+import { User } from './user.entity'
+import { GraphQLDate } from 'graphql-scalars'
 
 @ObjectType()
 @Entity()
@@ -11,9 +14,21 @@ export class Enrolment {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Field()
-  @Column({ default: false })
-  isFinished: boolean
+  @Field(() => EnrolmentStatus)
+  @Column()
+  status: string
+
+  @Field(() => GraphQLDate)
+  @Column({ type: 'timestamp without time zone' })
+  startTime: Date
+
+  @Field(() => GraphQLDate)
+  @Column({ type: 'timestamp without time zone' })
+  endTime: Date
+
+  @Field(() => GraphQLDate)
+  @Column({ type: 'timestamp without time zone' })
+  overduePaymentAt: Date
 
   @Field(() => ID)
   @Column()
@@ -38,6 +53,15 @@ export class Enrolment {
   @Field(() => Class)
   @ManyToOne(() => Class, { onDelete: 'CASCADE' })
   class: Class
+
+  @Field(() => ID, { nullable: true })
+  @Column({ nullable: true })
+  paymentId: string
+
+  @Field(() => Payment, { nullable: true })
+  @OneToOne(() => Payment)
+  @JoinColumn({ name: 'paymentId' })
+  payment: Payment
 
   @Field()
   @CreateDateColumn()

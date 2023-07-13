@@ -29,4 +29,41 @@ export class StripeService {
       confirm: true,
     })
   }
+
+  // public async payout(destination: string, amount: number) {
+  //   this.stripe.customers.createSource('', {
+  //     source: ''
+  //   })
+
+  //   return this.stripe.payouts.create({
+  //     destination,
+  //     source_type:'',
+  //     amount,
+  //     currency: this.configService.get('STRIPE_CURRENCY'),
+  //   })
+  // }
+
+  // public async refund(paymentMethodId: string, customerId: string) {
+  //   return this.stripe.refunds.create({
+  //     charge: '',
+  //     currency: this.configService.get('STRIPE_CURRENCY'),
+  //     amount: '',
+  //     refund_application_fee: true,
+  //     reason: '',
+  //   })
+  // }
+
+  public async attachCreditCard(paymentMethodId: string, customerId: string) {
+    return this.stripe.setupIntents.create({
+      customer: customerId,
+      payment_method: paymentMethodId,
+    })
+  }
+
+  public async listCreditCards(customerId: string) {
+    return this.stripe.paymentMethods.list({
+      customer: customerId,
+      type: 'card',
+    })
+  }
 }

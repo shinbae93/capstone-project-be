@@ -9,6 +9,7 @@ import { ClassService } from './class.service'
 import { CreateClassInput } from './dto/create-class.input'
 import { UpdateClassInput } from './dto/update-class.input'
 import { ClassQueryParams } from './dto/class-query-params.input'
+import * as moment from 'moment'
 
 @Resolver(() => Class)
 export class ClassResolver {
@@ -53,5 +54,10 @@ export class ClassResolver {
   async getOccupiedSlots(@Parent() parent: Class) {
     const { id } = parent
     return this.enrolmentservice.getCountByClass(id)
+  }
+
+  @ResolveField('duration', () => Number)
+  async getDuration(@Parent() parent: Class) {
+    return Math.ceil(moment(parent.endDate).diff(parent.startDate, 'month', true))
   }
 }

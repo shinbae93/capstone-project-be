@@ -1,4 +1,6 @@
 import { ScheduleTime } from 'src/database/entities/sub-object/schedule-time'
+import * as moment from 'moment'
+import { InternalServerErrorException } from '@nestjs/common'
 
 export type Schedule = {
   startDate: Date
@@ -54,6 +56,7 @@ export function isScheduleTimeArrayOverllaped(schedule: ScheduleTime[]) {
 export function isTwoScheduleTimeArrayOverllaped(firstSchedule: ScheduleTime[], secondSchedule: ScheduleTime[]) {
   for (const schedule of firstSchedule) {
     const isOverlapped = secondSchedule.filter((item) => isScheduleTimeOverlapped(item, schedule))
+    console.log('🚀 ~ file: schedule.ts:59 ~ isTwoScheduleTimeArrayOverllaped ~ isOverlapped:', isOverlapped)
 
     if (isOverlapped.length) {
       return true
@@ -74,14 +77,25 @@ export function isScheduleOverlapped(firstSchedule: Schedule, secondSchedule: Sc
   return false
 }
 
-export function convertScheduleListToMap(schedule: ScheduleTime[]) {
-  return new Map(
-    schedule.map((item) => [
-      item.dayOfWeek,
-      {
-        startTime: item.startTime,
-        endTime: item.endTime,
-      },
-    ])
-  )
+export function getNextStart(schedule: ScheduleTime[], startDate: Date, endDate: Date, date = new Date()) {
+  if (moment(date).isSameOrAfter(moment(endDate))) {
+    throw new InternalServerErrorException()
+  }
+
+  let nextStart = moment(startDate)
+  while (nextStart.isBefore(moment(date))) {
+    nextStart.add(1, 'month')
+  }
+
+  if (nextStart.isAfter(moment(endDate))) {
+    nextStart = moment(endDate)
+  }
+
+  return moment({
+    year: nextStart.get('year'),
+    month: nextStart.get('month'),
+    day: nextStart.get('date'),
+    hour: splitTime(schedule[0].startTime).hour,
+    minute: splitTime(schedule[0].startTime).minute,
+  })
 }

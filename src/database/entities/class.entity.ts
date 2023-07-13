@@ -1,8 +1,9 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql'
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import { ScheduleTime } from './sub-object/schedule-time'
-import { Course } from './course.entity'
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql'
+import { GraphQLDate } from 'graphql-scalars'
 import { ClassMethod } from 'src/common/enums'
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { Course } from './course.entity'
+import { ScheduleTime } from './sub-object/schedule-time'
 
 @ObjectType()
 @Entity()
@@ -15,9 +16,28 @@ export class Class {
   @Column()
   name: string
 
+  @Field()
+  @Column({ type: 'float' })
+  fee: number
+
   @Field(() => ClassMethod)
   @Column()
   method: string
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  address: string
+
+  @Field(() => GraphQLDate)
+  @Column({ type: 'date' })
+  startDate: Date
+
+  @Field(() => GraphQLDate)
+  @Column({ type: 'date' })
+  endDate: Date
+
+  @Field(() => Int)
+  duration: number
 
   @Field()
   @Column({ default: 0 })

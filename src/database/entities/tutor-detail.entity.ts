@@ -1,5 +1,14 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql'
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm'
 import { User } from './user.entity'
 
 @ObjectType()
@@ -21,6 +30,13 @@ export class TutorDetail {
   @Column()
   cv: string
 
+  @Field(() => Float, { nullable: true, defaultValue: 0 })
+  @Column({ nullable: true })
+  rating: number
+
+  @Field({ nullable: true, defaultValue: 0 })
+  totalReviews: number
+
   @Field(() => ID)
   @Column()
   @Index()
@@ -29,4 +45,12 @@ export class TutorDetail {
   @OneToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User
+
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date
+
+  @Field()
+  @UpdateDateColumn()
+  updatedAt: Date
 }

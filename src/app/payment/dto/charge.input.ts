@@ -6,5 +6,5 @@ export class ChargeInput {
   paymentMethodId: string
 
   @Field()
-  amount: number
+  classId: string
 }

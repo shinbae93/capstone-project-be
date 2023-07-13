@@ -1,15 +1,16 @@
-import { Args, Float, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql'
-import * as moment from 'moment'
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql'
+import { RoleId } from 'src/common/enums'
 import { Class } from 'src/database/entities/class.entity'
 import { Grade } from 'src/database/entities/grade.entity'
 import { Subject } from 'src/database/entities/subject.entity'
 import { User } from 'src/database/entities/user.entity'
 import { CurrentUser } from 'src/decorators/current-user.decorator'
+import { Roles } from 'src/decorators/roles.decorator'
 import { Course } from '../../database/entities/course.entity'
 import { CourseLoader } from './course.loader'
 import { CourseService } from './course.service'
-import { CourseQueryParams } from './dto/courses-query-params.input'
 import { CoursesPagination } from './dto/courses-pagination.output'
+import { CourseQueryParams } from './dto/courses-query-params.input'
 import { CreateCourseInput } from './dto/create-course.input'
 import { UpdateCourseInput } from './dto/update-course.input'
 
@@ -47,10 +48,10 @@ export class CourseResolver {
     return this.courseService.remove(id)
   }
 
-  @ResolveField('duration', () => Float)
-  async getDuration(@Parent() course: Course) {
-    const { startDate, endDate } = course
-    return moment(endDate).diff(moment(startDate), 'months')
+  @Roles(RoleId.ADMIN)
+  @Mutation(() => Boolean)
+  removeCourseByAdmin(@Args('id', { type: () => ID }) id: string) {
+    return this.courseService.remove(id)
   }
 
   @ResolveField('grade', () => Grade)

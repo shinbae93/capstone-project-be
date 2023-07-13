@@ -1,4 +1,5 @@
-import { ObjectType, Field, ID, Int } from '@nestjs/graphql'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { CourseStatus } from 'src/common/enums'
 import {
   Column,
   CreateDateColumn,
@@ -8,12 +9,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { User } from './user.entity'
-import { CourseStatus } from 'src/common/enums'
+import { Class } from './class.entity'
 import { Grade } from './grade.entity'
 import { Subject } from './subject.entity'
-import { Class } from './class.entity'
-import { GraphQLDate } from 'graphql-scalars'
+import { User } from './user.entity'
 
 @ObjectType()
 @Entity()
@@ -39,14 +38,6 @@ export class Course {
   objectives: string[]
 
   @Field()
-  @Column({ type: 'float' })
-  fee: number
-
-  @Field(() => Int, { nullable: true })
-  @Column({ type: 'int', default: 30 })
-  paymentDate: number
-
-  @Field()
   @Column({ default: false })
   isPublished: boolean
 
@@ -57,17 +48,6 @@ export class Course {
   @Field(() => CourseStatus)
   @Column()
   status: string
-
-  @Field(() => GraphQLDate)
-  @Column({ type: 'date' })
-  startDate: Date
-
-  @Field(() => GraphQLDate)
-  @Column({ type: 'date' })
-  endDate: Date
-
-  @Field()
-  duration: number
 
   @Field()
   @Column()

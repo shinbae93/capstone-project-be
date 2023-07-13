@@ -6,16 +6,29 @@ import { FindOptionsWhere, Repository } from 'typeorm'
 import { SubjectMapGradeService } from '../subject-map-grade/subject-map-grade.service'
 import { CreateSubjectInput } from './dto/create-subject.input'
 import { UpdateSubjectInput } from './dto/update-subject.input'
+import { QueryParams } from 'src/base/types/query-params.type'
+import { applySorting } from 'src/utils/query-builder'
+import { paginate } from 'nestjs-typeorm-paginate'
+import { Course } from 'src/database/entities/course.entity'
 
 @Injectable()
 export class SubjectService {
   constructor(
     @InjectRepository(Subject) private subjectRepository: Repository<Subject>,
+    @InjectRepository(Course) private courseRepository: Repository<Course>,
     private subjectMapGradeService: SubjectMapGradeService
   ) {}
 
-  findAll() {
-    return this.subjectRepository.find()
+  findAll(queryParams: QueryParams) {
+    const { sorting, pagination } = queryParams
+
+    const queryBuilder = this.subjectRepository.createQueryBuilder()
+
+    if (sorting) {
+      applySorting(queryBuilder, sorting)
+    }
+
+    return paginate(queryBuilder, pagination)
   }
 
   findMany(criteria: FindOptionsWhere<Subject> | FindOptionsWhere<Subject>[]) {
@@ -59,6 +72,10 @@ export class SubjectService {
   }
 
   async remove(id: string) {
+    const publishedCourse = await this.courseRepository.findOneBy({ subjectId: id })
+    if (publishedCourse) {
+      throw new BadRequestException(ERROR_MESSAGE.CANNOT_DELETE_SUBJECT_HAVE_PUBLISHED_COURSE)
+    }
     await this.findOne({ id })
     await this.subjectRepository.delete({ id })
     await this.subjectMapGradeService.remove({ subjectId: id })

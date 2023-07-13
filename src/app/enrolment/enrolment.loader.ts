@@ -17,7 +17,7 @@ export class EnrolmentLoader {
   public readonly batchUsers = new DataLoader(async (userIds: string[]) => {
     const users = await this.userService.findManyByIds(userIds)
     const usersMap = new Map(users.map((item) => [item.id, item]))
-    return userIds.map((classId) => usersMap.get(classId))
+    return userIds.map((userId) => usersMap.get(userId))
   })
 
   public readonly batchCourses = new DataLoader(async (courseIds: string[]) => {

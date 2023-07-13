@@ -15,6 +15,7 @@ export function joinRelations<T extends ObjectLiteral>(queryBuilder: SelectQuery
 }
 
 export function applySorting<T>(queryBuilder: SelectQueryBuilder<T>, sorting: SortField[]) {
+  queryBuilder.addOrderBy('id', 'ASC', 'NULLS LAST')
   sorting.forEach((sortField) => {
     queryBuilder.addOrderBy(sortField.field, sortField.direction, sortField.nulls)
   })

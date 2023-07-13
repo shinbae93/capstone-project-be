@@ -1,5 +1,5 @@
-import { InputType, Field } from '@nestjs/graphql'
-import { IsUrl, Max, Min, ValidateIf } from 'class-validator'
+import { Field, Float, InputType } from '@nestjs/graphql'
+import { Max, Min } from 'class-validator'
 import { User } from 'src/database/entities/user.entity'
 import { EntityExists } from 'src/decorators/entity-exists.decorator'
 
@@ -10,11 +10,9 @@ export class CreateTutorReviewInput {
 
   @Min(0)
   @Max(5)
-  @Field()
+  @Field(() => Float)
   rating: number
 
-  @ValidateIf((_, value) => value != null)
-  @IsUrl(null, { each: true })
   @Field(() => [String], { nullable: true })
   images: string[]
 

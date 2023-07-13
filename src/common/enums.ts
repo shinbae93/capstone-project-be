@@ -1,8 +1,8 @@
 import { registerEnumType } from '@nestjs/graphql'
 
 export enum ClassMethod {
-  ONLINE = 'online',
-  OFFLINE = 'offline',
+  ONLINE = 'Online',
+  OFFLINE = 'Offline',
 }
 
 registerEnumType(ClassMethod, {
@@ -26,11 +26,10 @@ export enum RoleId {
 }
 
 export enum TutorRequestStatus {
-  PENDING = 'PENDING',
-  PROCESSING = 'PROCESSING',
-  ACCEPTED = 'ACCEPTED',
-  CANCELED = 'CANCELED',
-  REJECTED = 'REJECTED',
+  PENDING = 'Pending',
+  ACCEPTED = 'Accepted',
+  CANCELED = 'Canceled',
+  REJECTED = 'Rejected',
 }
 
 registerEnumType(TutorRequestStatus, {
@@ -38,9 +37,10 @@ registerEnumType(TutorRequestStatus, {
 })
 
 export enum CourseStatus {
-  UP_COMING = 'UP_COMING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  ENDED = 'ENDED',
+  DRAFT = 'Draft',
+  UP_COMING = 'Up coming',
+  IN_PROGRESS = 'In progress',
+  ENDED = 'Ended',
 }
 
 registerEnumType(CourseStatus, {
@@ -48,9 +48,11 @@ registerEnumType(CourseStatus, {
 })
 
 export enum EnrolmentStatus {
-  UP_COMING = 'UP_COMING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  FINISHED = 'FINISHED',
+  PENDING_PAYMENT = 'Pending payment',
+  UP_COMING = 'Up coming',
+  IN_PROGRESS = 'In progress',
+  ENDED = 'Ended',
+  OVERDUE_PAYMENT = 'Overdue payment',
 }
 
 registerEnumType(EnrolmentStatus, {
@@ -73,4 +75,22 @@ export enum SortNullDirection {
 
 registerEnumType(SortNullDirection, {
   name: 'SortNullDirection',
+})
+
+export enum TutorReportStatus {
+  PENDING = 'Pending',
+  DONE_PROCESSING = 'Done processing',
+}
+
+registerEnumType(TutorReportStatus, {
+  name: 'TutorReportStatus',
+})
+
+export enum PaymentType {
+  PAY_IN = 'Pay in',
+  PAY_OUT = 'Pay out',
+}
+
+registerEnumType(PaymentType, {
+  name: 'PaymentType',
 })

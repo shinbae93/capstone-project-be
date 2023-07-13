@@ -12,6 +12,8 @@ import { QuizQueryParams } from './dto/quiz-query-params.input'
 import { applySorting } from 'src/utils/query-builder'
 import { paginate } from 'nestjs-typeorm-paginate'
 import { AssignmentService } from '../assignment/assignment.service'
+import * as moment from 'moment'
+import { uniq } from 'lodash'
 
 @Injectable()
 export class QuizService {
@@ -39,9 +41,17 @@ export class QuizService {
       throw new BadRequestException(ERROR_MESSAGE.CLASS_NOT_FOUND)
     }
 
+    if (moment(input.startTime).isBefore(classRecord.startDate)) {
+      throw new BadRequestException(ERROR_MESSAGE.INVALID_ANSWER_TIME_OF_QUIZ)
+    }
+
+    if (moment(input.endTime).isAfter(classRecord.endDate)) {
+      throw new BadRequestException(ERROR_MESSAGE.INVALID_ANSWER_TIME_OF_QUIZ)
+    }
+
     const quiz = await this.quizRepository.save(this.quizRepository.create(input))
     const enrolments = await this.enrolmentRepository.find({ where: { classId }, relations: { user: true } })
-    const studentIds = enrolments.map((item) => item.userId)
+    const studentIds = uniq(enrolments.map((item) => item.userId))
 
     await this.assignmentService.bulkCreate(quiz, studentIds)
 
